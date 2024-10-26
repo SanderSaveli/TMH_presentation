@@ -16,14 +16,14 @@ public class ModelNameView : MonoBehaviour
     }
     private void OnEnable()
     {
-        _signalBus.Subscribe<NewModelSelected>(UpdateDescriotion);
+        _signalBus.Subscribe<EventNewModelSelected>(UpdateDescriotion);
     }
     private void OnDisable()
     {
-        _signalBus.Unsubscribe<NewModelSelected>(UpdateDescriotion);
+        _signalBus.Unsubscribe<EventNewModelSelected>(UpdateDescriotion);
     }
 
-    public void UpdateDescriotion(NewModelSelected ctx)
+    public void UpdateDescriotion(EventNewModelSelected ctx)
     {
         _text.text = ctx.modelData.Name;
     }

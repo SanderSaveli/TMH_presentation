@@ -6,6 +6,7 @@ public class MainInstaller : MonoInstaller
     {
         SignalBusInstaller.Install(Container);
 
-        Container.DeclareSignal<NewModelSelected>();
+        Container.DeclareSignal<EventNewModelSelected>();
+        Container.DeclareSignal<EventInputSelectModel>();
     }
 }

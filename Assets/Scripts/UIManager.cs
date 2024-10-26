@@ -1,16 +1,17 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Cinemachine;
 using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private CanvasGroup _menuCanvasGroup;
-    [SerializeField] private CanvasGroup _trainsCanvasGroup;
+    [SerializeField] private RectTransform _menuRectTransform;
+    [SerializeField] private RectTransform _trainsRectTransform;
+    [SerializeField] private RectTransform _enterprisesRectTransform;
+
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private Color _solidColor;
-    [SerializeField] private CinemachineVirtualCamera _cinemachineStartCamera; 
-    [SerializeField] private CinemachineVirtualCamera _cinemachineMainCamera; 
+    [SerializeField] private CinemachineVirtualCamera _cinemachineStartCamera;
+    [SerializeField] private CinemachineVirtualCamera _cinemachineMainCamera;
     [SerializeField] private float _transitionDuration = 1f;
 
     private bool _isInMainScene = false;
@@ -23,9 +24,8 @@ public class UIManager : MonoBehaviour
         _cinemachineStartCamera.Priority = 10;
         _cinemachineMainCamera.Priority = 0;
 
-        _menuCanvasGroup.alpha = 1;
-        _menuCanvasGroup.interactable = true;
-        _menuCanvasGroup.blocksRaycasts = true;
+        _trainsRectTransform.anchoredPosition = new Vector2(-Screen.width, 0);
+        _enterprisesRectTransform.anchoredPosition = new Vector2(Screen.width, 0);
     }
 
     public void OnStartButtonPressed()
@@ -34,49 +34,65 @@ public class UIManager : MonoBehaviour
 
         _isInMainScene = true;
 
-        _menuCanvasGroup.DOFade(0, _transitionDuration / 2).OnComplete(() =>
-        {
-            _menuCanvasGroup.interactable = false;
-            _menuCanvasGroup.blocksRaycasts = false;
-        });
+        // Завершаем текущие анимации интерфейса и цвета, чтобы избежать наложений
+        _menuRectTransform.DOKill();
+        _trainsRectTransform.DOKill();
+        _mainCamera.DOKill();
 
-        _trainsCanvasGroup.DOFade(1, _transitionDuration).OnComplete(() =>
-        {
-            _trainsCanvasGroup.interactable = true;
-            _trainsCanvasGroup.blocksRaycasts = true;
-        });
-
+        // Анимация перехода камеры на Skybox
+        _mainCamera.DOColor(Color.black, _transitionDuration);
         _mainCamera.clearFlags = CameraClearFlags.Skybox;
 
-        DOTween.To(() => _mainCamera.backgroundColor, x => _mainCamera.backgroundColor = x, Color.black, _transitionDuration);
+        // Анимация интерфейса
+        _menuRectTransform.DOAnchorPos(new Vector2(Screen.width, 0), _transitionDuration);
+        _trainsRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
 
-
+        // Переключение камеры
         _cinemachineStartCamera.Priority = 0;
         _cinemachineMainCamera.Priority = 10;
     }
 
-    public void OnBackButtonPressed()
+    public void ReturnFromModels()
     {
         if (!_isInMainScene) return;
 
         _isInMainScene = false;
 
-        _menuCanvasGroup.DOFade(1, _transitionDuration).OnComplete(() =>
-        {
-            _menuCanvasGroup.interactable = true;
-            _menuCanvasGroup.blocksRaycasts = true;
-        });
+        // Завершаем текущие анимации интерфейса и цвета
+        _menuRectTransform.DOKill();
+        _trainsRectTransform.DOKill();
+        _mainCamera.DOKill();
 
-        _trainsCanvasGroup.DOFade(0, _transitionDuration / 2).OnComplete(() =>
-        {
-            _trainsCanvasGroup.interactable = false;
-            _trainsCanvasGroup.blocksRaycasts = false;
-        });
+        // Анимация возврата камеры
+        _menuRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
+        _trainsRectTransform.DOAnchorPos(new Vector2(-Screen.width, 0), _transitionDuration);
 
-        DOTween.To(() => _mainCamera.backgroundColor, x => _mainCamera.backgroundColor = x, _solidColor, _transitionDuration)
+        // Включаем solidColor только после завершения анимации
+        _mainCamera.DOColor(_solidColor, _transitionDuration)
             .OnComplete(() => _mainCamera.clearFlags = CameraClearFlags.SolidColor);
 
+        // Переключение камеры
         _cinemachineStartCamera.Priority = 10;
         _cinemachineMainCamera.Priority = 0;
+    }
+
+    public void OpenEnterprisesVindow()
+    {
+        // Завершаем текущие анимации интерфейса
+        _menuRectTransform.DOKill();
+        _enterprisesRectTransform.DOKill();
+
+        _menuRectTransform.DOAnchorPos(new Vector2(-Screen.width, 0), _transitionDuration);
+        _enterprisesRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
+    }
+
+    public void ReturnFromEnterprises()
+    {
+        // Завершаем текущие анимации интерфейса
+        _menuRectTransform.DOKill();
+        _enterprisesRectTransform.DOKill();
+
+        _menuRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
+        _enterprisesRectTransform.DOAnchorPos(new Vector2(Screen.width, 0), _transitionDuration);
     }
 }

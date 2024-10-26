@@ -16,15 +16,15 @@ public class DescriptionView : MonoBehaviour
 
     private void OnEnable()
     {
-        _signalBus.Subscribe<NewModelSelected>(UpdateDescription);
+        _signalBus.Subscribe<EventNewModelSelected>(UpdateDescription);
     }
 
     private void OnDisable()
     {
-        _signalBus.Unsubscribe<NewModelSelected>(UpdateDescription);
+        _signalBus.Unsubscribe<EventNewModelSelected>(UpdateDescription);
     }
 
-    public void UpdateDescription(NewModelSelected ctx)
+    public void UpdateDescription(EventNewModelSelected ctx)
     {
         StopAllCoroutines();
 
