@@ -8,5 +8,6 @@ public class MainInstaller : MonoInstaller
 
         Container.DeclareSignal<EventNewModelSelected>();
         Container.DeclareSignal<EventInputSelectModel>();
+        Container.DeclareSignal<EventModelDeSelected>();
     }
 }

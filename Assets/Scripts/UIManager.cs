@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -94,5 +95,10 @@ public class UIManager : MonoBehaviour
 
         _menuRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
         _enterprisesRectTransform.DOAnchorPos(new Vector2(Screen.width, 0), _transitionDuration);
+    }
+
+    public void LoadEnterpriseScene()
+    {
+        SceneManager.LoadScene(SceneNames.TestEnterpriseScene);
     }
 }

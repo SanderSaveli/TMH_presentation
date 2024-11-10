@@ -38,6 +38,7 @@ public class DescriptionView : MonoBehaviour
         {
             _text.text += c;
             yield return new WaitForSeconds(0.01f); 
+
         }
     }
 }
