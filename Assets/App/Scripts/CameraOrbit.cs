@@ -16,7 +16,7 @@ public class CameraOrbit : MonoBehaviour
     _minZoomDistance = 5f, _maxZoomDistance = 20f;
 
     private float _currentVerticalAngle, _currentHorizontalAngle, _distanceToTarget, _currentRotationSpeed, _currentZoomSpeed;
-    private Vector2 _touchStartPosition;
+    private Vector2 _touchStartPosition, _swipeDirection;
     private bool _isFingerContinuesToMove = false;
 
     /*
@@ -25,7 +25,7 @@ public class CameraOrbit : MonoBehaviour
     и упрощенного редактирования 
     */
     private const string MOUSEXAXIS = "Mouse X", MOUSEYAXIS = "Mouse Y", MOUSEWHEELAXIS = "Mouse ScrollWheel", CENTERTAG = "Center";
-    private const float PINCHTOZOOMMULTIPLIER = 0.0005f, INTERPOLATIONSPEED = 50f, TOUCHMOVEMENTMARGIN = 3f;
+    private const float PINCHTOZOOMMULTIPLIER = 0.0005f, INTERPOLATIONSPEED = 10f, TOUCHMOVEMENTMARGIN = 3f, ANGLETHRESHOLD = 0.1f;
     
     private void Start()
     {
@@ -73,26 +73,24 @@ public class CameraOrbit : MonoBehaviour
 
             switch (touch.phase)
             {
-                case TouchPhase.Began:
-                    Debug.Log("New touch started");
-                    
+                case TouchPhase.Began:                
                     _touchStartPosition = touch.position;
                     break;
 
                 case TouchPhase.Moved:
-                    _currentRotationSpeed = touch.deltaPosition.magnitude > TOUCHMOVEMENTMARGIN ? _rotationSpeed : 0f;
-
-                    Vector2 _touchDirection = (touch.position - _touchStartPosition).normalized;
-
-                    _currentHorizontalAngle = Mathf.Lerp(_currentHorizontalAngle, _currentHorizontalAngle + _touchDirection.x * _currentRotationSpeed, Time.deltaTime * INTERPOLATIONSPEED);
-                    _currentVerticalAngle = Mathf.Lerp(_currentVerticalAngle, _currentVerticalAngle + (-_touchDirection.y * _currentRotationSpeed), Time.deltaTime * INTERPOLATIONSPEED);
-                    _currentVerticalAngle = Mathf.Clamp(_currentVerticalAngle, _minVerticalAngle, _maxVerticalAngle);
+                    _swipeDirection = (touch.position - _touchStartPosition).normalized;
                     break;
 
                 case TouchPhase.Stationary:
                     _touchStartPosition = touch.position;
                     break;
             }
+
+            _currentRotationSpeed = touch.deltaPosition.magnitude > TOUCHMOVEMENTMARGIN ? _rotationSpeed : 0f;
+
+            _currentHorizontalAngle += _swipeDirection.x * _currentRotationSpeed;
+            _currentVerticalAngle += -_swipeDirection.y * _currentRotationSpeed;
+            _currentVerticalAngle = Mathf.Clamp(_currentVerticalAngle, _minVerticalAngle, _maxVerticalAngle);
         }
         
         //Приближение камеры с помощью щипка пальцами
@@ -132,7 +130,7 @@ public class CameraOrbit : MonoBehaviour
 
             _currentZoomSpeed = _isFingerContinuesToMove && !isInsideMargin ? _zoomSpeed : 0f;
 
-            _distanceToTarget = Mathf.Lerp(_distanceToTarget, _distanceToTarget + currentDistanceBetweenTouches * PINCHTOZOOMMULTIPLIER * _currentZoomSpeed * (isDistanceGrowed ? -1 : 1), Time.deltaTime * INTERPOLATIONSPEED);
+            _distanceToTarget += currentDistanceBetweenTouches * PINCHTOZOOMMULTIPLIER * _currentZoomSpeed * (isDistanceGrowed ? -1 : 1);
             _distanceToTarget = Mathf.Clamp(_distanceToTarget, _minZoomDistance, _maxZoomDistance);
         }
         
@@ -142,8 +140,8 @@ public class CameraOrbit : MonoBehaviour
             float mouseXValue = Input.GetAxis(MOUSEXAXIS) * _rotationSpeed;
             float mouseYValue = -Input.GetAxis(MOUSEYAXIS) * _rotationSpeed;
 
-            _currentHorizontalAngle = Mathf.Lerp(_currentHorizontalAngle, _currentHorizontalAngle + mouseXValue, Time.deltaTime * INTERPOLATIONSPEED);
-            _currentVerticalAngle = Mathf.Lerp(_currentVerticalAngle, _currentVerticalAngle + mouseYValue, Time.deltaTime * INTERPOLATIONSPEED);
+            _currentHorizontalAngle += mouseXValue;
+            _currentVerticalAngle += mouseYValue;
             _currentVerticalAngle = Mathf.Clamp(_currentVerticalAngle, _minVerticalAngle, _maxVerticalAngle);
         }
 
@@ -152,10 +150,11 @@ public class CameraOrbit : MonoBehaviour
         {
             float wheelValue = Input.GetAxis(MOUSEWHEELAXIS);
 
-            _currentZoomSpeed = wheelValue != 0f ? _zoomSpeed : 0f;
-
-            _distanceToTarget = Mathf.Lerp(_distanceToTarget, _distanceToTarget - wheelValue * _currentZoomSpeed, Time.deltaTime * INTERPOLATIONSPEED);
-            _distanceToTarget = Mathf.Clamp(_distanceToTarget, _minZoomDistance, _maxZoomDistance);
+            if(wheelValue != 0f)
+            {
+                _distanceToTarget -= wheelValue * _zoomSpeed;
+                _distanceToTarget = Mathf.Clamp(_distanceToTarget, _minZoomDistance, _maxZoomDistance);
+            }
         }
     }
 
@@ -164,7 +163,20 @@ public class CameraOrbit : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(currentVerticalAngle, currentHorizontalAngle, 0);
         Vector3 offset = rotation * Vector3.back * distanceToTarget;
 
-        transform.position = _target.position + offset;
-        transform.LookAt(_target);
+        transform.position = Vector3.Lerp(transform.position, _target.position + offset, Time.deltaTime * INTERPOLATIONSPEED);
+        SmoothLookAtTarget(transform, _target.position, INTERPOLATIONSPEED, ANGLETHRESHOLD);
+    }
+
+    private void SmoothLookAtTarget(Transform rotatingObject, Vector3 targetPosition, float speed, float angleThreshold)
+    {
+        Vector3 direction = targetPosition - rotatingObject.position;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            if (Quaternion.Angle(rotatingObject.rotation, targetRotation) > angleThreshold)
+                rotatingObject.rotation = Quaternion.Slerp(rotatingObject.rotation, targetRotation, Time.deltaTime * speed);
+        }
     }
 }
