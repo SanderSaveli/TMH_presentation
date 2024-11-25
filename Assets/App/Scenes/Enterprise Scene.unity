@@ -880,10 +880,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 579890122}
-  _distance: 5
-  _rotationSpeed: 2
+  _rotationSpeed: 3
+  _zoomSpeed: 2
   _minVerticalAngle: 10
   _maxVerticalAngle: 80
+  _minZoomDistance: 5
+  _maxZoomDistance: 20
 --- !u!1 &1082275773
 GameObject:
   m_ObjectHideFlags: 0
