@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public static class SceneNames
 {
-    public static string MenuScene => "MenuScene";
-    public static string TestEnterpriseScene => "EnterpriseScene";
+    public static string MenuScene => "Main Menu Scene";
+    public static string TestEnterpriseScene => "Enterprise Scene";
 }
