@@ -876,16 +876,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1064450804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da68e3a8f13d6ae40b45df63f207a48b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a75e35e7388c481b99db79df8e1b5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 579890122}
-  _rotationSpeed: 3
-  _zoomSpeed: 2
-  _minVerticalAngle: 10
-  _maxVerticalAngle: 80
-  _minZoomDistance: 5
-  _maxZoomDistance: 20
+  _rotationSpeed: 2000
+  _zoomSpeed: 1000
+  _minDistance: 5
+  _maxDistance: 20
+  _smoothingSpeed: 5
 --- !u!1 &1082275773
 GameObject:
   m_ObjectHideFlags: 0
@@ -1794,6 +1793,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c14db5f43412464a85da5f6fa0eb8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraController: {fileID: 0}
+  modelManager: {fileID: 0}
 --- !u!114 &1838864800
 MonoBehaviour:
   m_ObjectHideFlags: 0
