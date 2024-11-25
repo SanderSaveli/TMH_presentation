@@ -1,139 +1,118 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using DG.Tweening;
-using System;
-using Zenject;
 using UnityEngine.EventSystems;
+using System;
+using System.Collections.Generic;
+using Zenject;
+using DG.Tweening;
 
-[Serializable]
-public class ModelDataPair
-{
-    public GameObject model;
-    public ModelData modelData;
-}
 public class ModelViewer : MonoBehaviour
 {
-    public List<ModelDataPair> models; // Список всех моделей
-    public Transform target; // Текущая целевая модель
-    public float rotationSpeed = 100.0f; // Скорость вращения
-    public float zoomSpeed = 2.0f; // Скорость изменения расстояния (зум)
-    public float minDistance = 5.0f; // Минимальное расстояние до модели
-    public float maxDistance = 20.0f; // Максимальное расстояние до модели
+    [SerializeField] private List<ModelDataPair> _models;
+    [SerializeField] private Transform _target;
+    [SerializeField] private float _rotationSpeed = 100.0f, _zoomSpeed = 2.0f, _minDistance = 5.0f, _maxDistance = 20.0f;
+    [SerializeField] private float _animationDuration = 0.5f;
 
-    private int currentModelIndex = 0; // Индекс текущей модели
-    private int previousModelIndex = 0; // Индекс текущей модели
-    private Vector3 currentEulerAngles; // Текущий угол камеры
-    private float distanceToTarget; // Текущее расстояние до модели
+    private int _currentModelIndex = 0, _previousModelIndex = 0;
+    private Vector3 _currentEulerAngles;
+    private float _distanceToTarget;
 
-    public float animationDuration = 0.5f; // Длительность анимации появления и исчезновения
-    private bool isFirstModel = true; // Флаг для отслеживания первого показа модели
-    private bool isRotating;
+    private bool _isFirstModel = true;
+    private bool _isRotating = false;
 
     private SignalBus _signalBus;
+
     [Inject]
-    public void Construct(SignalBus signalBus)
+    public void Construct(SignalBus signalBus) => _signalBus = signalBus;
+
+    private void OnEnable() => _signalBus.Subscribe<EventInputSelectModel>(ShowModel);
+
+    private void Start()
     {
-        _signalBus = signalBus;
+        _distanceToTarget = Vector3.Distance(transform.position, _target.position);
+        _currentEulerAngles = transform.eulerAngles;
     }
 
-    void Start()
+    private void LateUpdate()
     {
-        distanceToTarget = Vector3.Distance(transform.position, target.position);
-        currentEulerAngles = transform.eulerAngles;
-    }
-
-    private void OnEnable()
-    {
-        _signalBus.Subscribe<EventInputSelectModel>(ShowModel);
-    }
-
-    private void OnDisable()
-    {
-        _signalBus.Unsubscribe<EventInputSelectModel>(ShowModel);
-    }
-
-    void Update()
-    {
-        // Начинаем вращение, если нажата левая кнопка мыши и курсор не над UI
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-        {
-            isRotating = true;
-        }
-        // Прекращаем вращение при отпускании кнопки мыши
+            _isRotating = true;
+        
         if (Input.GetMouseButtonUp(0))
+            _isRotating = false;
+
+        if (_isRotating)
         {
-            isRotating = false;
+            float horizontal = Input.GetAxis("Mouse X") * _rotationSpeed * Time.deltaTime;
+            float vertical = -Input.GetAxis("Mouse Y") * _rotationSpeed * Time.deltaTime;
+
+            _currentEulerAngles.x += vertical;
+            _currentEulerAngles.y += horizontal;
         }
 
-        // Выполняем вращение, если активен флаг isRotating
-        if (isRotating)
-        {
-            float horizontal = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
-            float vertical = -Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
-
-            currentEulerAngles.x += vertical;
-            currentEulerAngles.y += horizontal;
-
-            Quaternion rotation = Quaternion.Euler(currentEulerAngles);
-            transform.position = target.position - rotation * Vector3.forward * distanceToTarget;
-            transform.LookAt(target);
-        }
-
-        // Зум работает только при отсутствии взаимодействия с UI
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
+
             if (scroll != 0.0f)
             {
-                distanceToTarget -= scroll * zoomSpeed;
-                distanceToTarget = Mathf.Clamp(distanceToTarget, minDistance, maxDistance);
-
-                Quaternion rotation = Quaternion.Euler(currentEulerAngles);
-                transform.position = target.position - rotation * Vector3.forward * distanceToTarget;
+                _distanceToTarget -= scroll * _zoomSpeed;
+                _distanceToTarget = Mathf.Clamp(_distanceToTarget, _minDistance, _maxDistance);
             }
         }
+
+        Quaternion rotation = Quaternion.Euler(_currentEulerAngles);
+        transform.position = _target.position - rotation * Vector3.forward * _distanceToTarget;
+        transform.LookAt(_target);
     }
 
-    private void ShowModel(EventInputSelectModel ctx)
-    {
-        ShowModel(ctx.modelIndex);
-    }
-    void ShowModel(int index)
-    {
-        if (index < 0 || index >= models.Count) return;
+    private void ShowModel(EventInputSelectModel ctx) => ShowModel(ctx.modelIndex);
 
-        if (target != null && !isFirstModel)
+    private void ShowModel(int index)
+    {
+        if (index < 0 || index >= _models.Count) 
+            return;
+
+        if (_target != null && !_isFirstModel)
         {
-            GameObject previous = models[previousModelIndex].model;
+            GameObject previous = _models[_previousModelIndex].Model;
+
             previous.transform.DOKill();
             previous.SetActive(false);
-            previousModelIndex = currentModelIndex;
 
-            GameObject currentModel = models[currentModelIndex].model;
-            currentModel.transform.DOScale(Vector3.zero, animationDuration).OnComplete(() =>
+            _previousModelIndex = _currentModelIndex;
+
+            GameObject currentModel = _models[_currentModelIndex].Model;
+
+            currentModel.transform.DOScale(Vector3.zero, _animationDuration).OnComplete(() =>
             {
                 currentModel.SetActive(false); 
             });
         }
 
-        currentModelIndex = index;
-        GameObject nextModel = models[currentModelIndex].model;
-        ModelData nextModelData = models[currentModelIndex].modelData;
-        target = nextModel.transform;
+        _currentModelIndex = index;
+        GameObject nextModel = _models[_currentModelIndex].Model;
+        ModelData nextModelData = _models[_currentModelIndex].ModelData;
+        _target = nextModel.transform;
 
-        if (!isFirstModel)
-        {
+        if (!_isFirstModel)
             nextModel.transform.localScale = Vector3.zero;
-        }
 
         nextModel.SetActive(true);
 
         _signalBus.Fire(new EventNewModelSelected(nextModelData));
 
-        Vector3 targetScale = nextModel.transform.localScale == Vector3.zero ? new Vector3(1, 1, 1) : nextModel.transform.localScale;
-        nextModel.transform.DOScale(targetScale, animationDuration);
+        Vector3 targetScale = nextModel.transform.localScale == Vector3.zero ? Vector3.one : nextModel.transform.localScale;
+        nextModel.transform.DOScale(targetScale, _animationDuration);
 
-        isFirstModel = false;
+        _isFirstModel = false;
     }
+
+    private void OnDisable() => _signalBus.Unsubscribe<EventInputSelectModel>(ShowModel);
+}
+
+[Serializable]
+public class ModelDataPair
+{
+    public GameObject Model;
+    public ModelData ModelData;
 }
