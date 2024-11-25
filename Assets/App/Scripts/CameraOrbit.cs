@@ -4,35 +4,20 @@ using ModestTree;
 
 public class CameraOrbit : MonoBehaviour
 {
-    /*
-    Поля, к которым не нужен доступ из других классов, 
-    но для которых необходима возможность редактирования
-    из Inspector помечены как [SerializeField] private
-    для поддержания инкапсуляции.
-    */
     [SerializeField] private Transform _target;
     [SerializeField] private float _rotationSpeed = 2f, _zoomSpeed = 2f, 
     _minVerticalAngle = 10f, _maxVerticalAngle = 80f, 
     _minZoomDistance = 5f, _maxZoomDistance = 20f;
 
-    private float _currentVerticalAngle, _currentHorizontalAngle, _distanceToTarget, _currentRotationSpeed, _currentZoomSpeed;
+    private float _currentVerticalAngle, _currentHorizontalAngle, _distanceToTarget;
     private Vector2 _touchStartPosition, _swipeDirection;
     private bool _isFingerContinuesToMove = false;
 
-    /*
-    Названия осей мыши вынесены в константы 
-    для избежания "магических" значений
-    и упрощенного редактирования 
-    */
     private const string MOUSEXAXIS = "Mouse X", MOUSEYAXIS = "Mouse Y", MOUSEWHEELAXIS = "Mouse ScrollWheel", CENTERTAG = "Center";
     private const float PINCHTOZOOMMULTIPLIER = 0.0005f, INTERPOLATIONSPEED = 10f, TOUCHMOVEMENTMARGIN = 3f, ANGLETHRESHOLD = 0.1f;
     
     private void Start()
     {
-        /*
-        Если _target == null, то происходит поиск первого объекта 
-        с тегом "Center" на сцене.
-        */
         if (_target == null)
             _target = !GameObject.FindGameObjectsWithTag(CENTERTAG).IsEmpty() ? GameObject.FindGameObjectsWithTag(CENTERTAG)[0].transform : null;
 
@@ -52,10 +37,6 @@ public class CameraOrbit : MonoBehaviour
         ProcessInput();
     }
 
-    /*
-    Изменение позиции объектов, за которыми следит камера 
-    может происходить в Update, поэтому используем LateUpdate.
-    */
     private void LateUpdate()
     {
         if (_target == null) 
@@ -86,10 +67,8 @@ public class CameraOrbit : MonoBehaviour
                     break;
             }
 
-            _currentRotationSpeed = touch.deltaPosition.magnitude > TOUCHMOVEMENTMARGIN ? _rotationSpeed : 0f;
-
-            _currentHorizontalAngle += _swipeDirection.x * _currentRotationSpeed;
-            _currentVerticalAngle += -_swipeDirection.y * _currentRotationSpeed;
+            _currentHorizontalAngle += _swipeDirection.x * _rotationSpeed;
+            _currentVerticalAngle += -_swipeDirection.y * _rotationSpeed;
             _currentVerticalAngle = Mathf.Clamp(_currentVerticalAngle, _minVerticalAngle, _maxVerticalAngle);
         }
         
@@ -128,10 +107,11 @@ public class CameraOrbit : MonoBehaviour
             _isFingerContinuesToMove = !(isTouch1Stationary & isTouch2Stationary);
             bool isInsideMargin = touch1.deltaPosition.magnitude <= TOUCHMOVEMENTMARGIN || touch2.deltaPosition.magnitude <= TOUCHMOVEMENTMARGIN;
 
-            _currentZoomSpeed = _isFingerContinuesToMove && !isInsideMargin ? _zoomSpeed : 0f;
-
-            _distanceToTarget += currentDistanceBetweenTouches * PINCHTOZOOMMULTIPLIER * _currentZoomSpeed * (isDistanceGrowed ? -1 : 1);
-            _distanceToTarget = Mathf.Clamp(_distanceToTarget, _minZoomDistance, _maxZoomDistance);
+            if(_isFingerContinuesToMove && !isInsideMargin)
+            {
+                _distanceToTarget += currentDistanceBetweenTouches * PINCHTOZOOMMULTIPLIER * _zoomSpeed * (isDistanceGrowed ? -1 : 1);
+                _distanceToTarget = Mathf.Clamp(_distanceToTarget, _minZoomDistance, _maxZoomDistance);
+            }
         }
         
         //Вращение камеры с помощью мыши при зажатой левой клавише
