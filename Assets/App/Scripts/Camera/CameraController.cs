@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour, ICameraController
 {
@@ -59,28 +60,31 @@ public class CameraController : MonoBehaviour, ICameraController
     {
         Touch touch = Input.GetTouch(0);
 
-        if (touch.phase == TouchPhase.Began)
+        if(!EventSystem.current.IsPointerOverGameObject(touch.fingerId))
         {
-            _isRotatingTouch = true;
-            _lastTouchPosition = touch.position;
-        }
+            if (touch.phase == TouchPhase.Began)
+            {
+                _isRotatingTouch = true;
+                _lastTouchPosition = touch.position;
+            }
 
-        if (touch.phase == TouchPhase.Moved && _isRotatingTouch)
-        {
-            Vector2 delta = touch.position - _lastTouchPosition;
+            if (touch.phase == TouchPhase.Moved && _isRotatingTouch)
+            {
+                Vector2 delta = touch.position - _lastTouchPosition;
 
-            float horizontal = delta.x * _rotationSpeed * Time.deltaTime / Screen.width;
-            float vertical = -delta.y * _rotationSpeed * Time.deltaTime / Screen.height;
+                float horizontal = delta.x * _rotationSpeed * Time.deltaTime / Screen.width;
+                float vertical = -delta.y * _rotationSpeed * Time.deltaTime / Screen.height;
 
-            _targetEulerAngles.x += vertical;
-            _targetEulerAngles.y += horizontal;
+                _targetEulerAngles.x += vertical;
+                _targetEulerAngles.y += horizontal;
 
-            _lastTouchPosition = touch.position;
-        }
+                _lastTouchPosition = touch.position;
+            }
 
-        if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-        {
-            _isRotatingTouch = false;
+            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                _isRotatingTouch = false;
+            }
         }
     }
 
@@ -89,52 +93,61 @@ public class CameraController : MonoBehaviour, ICameraController
         Touch touch1 = Input.GetTouch(0);
         Touch touch2 = Input.GetTouch(1);
 
-        if (touch2.phase == TouchPhase.Began)
+        if(!EventSystem.current.IsPointerOverGameObject(touch1.fingerId) && !EventSystem.current.IsPointerOverGameObject(touch2.fingerId))
         {
-            _initialPinchDistance = Vector2.Distance(touch1.position, touch2.position);
-            return;
-        }
+            if (touch2.phase == TouchPhase.Began)
+            {
+                _initialPinchDistance = Vector2.Distance(touch1.position, touch2.position);
+                return;
+            }
 
-        if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
-        {
-            float currentDistance = Vector2.Distance(touch1.position, touch2.position);
-            float pinchDelta = currentDistance - _initialPinchDistance;
+            if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
+            {
+                float currentDistance = Vector2.Distance(touch1.position, touch2.position);
+                float pinchDelta = currentDistance - _initialPinchDistance;
 
-            _targetDistance -= pinchDelta * _zoomSpeed * Time.deltaTime / Screen.width;
-            _targetDistance = Mathf.Clamp(_targetDistance, _minDistance, _maxDistance);
+                _targetDistance -= pinchDelta * _zoomSpeed * Time.deltaTime / Screen.width;
+                _targetDistance = Mathf.Clamp(_targetDistance, _minDistance, _maxDistance);
 
-            _initialPinchDistance = currentDistance;
+                _initialPinchDistance = currentDistance;
+            }
         }
     }
 
     private void HandleMouseRotation()
     {
-        if (Input.GetMouseButtonDown(0))
+        if(!EventSystem.current.IsPointerOverGameObject())
         {
-            _isRotatingMouse = true;
-            _isRotatingTouch = false;
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                _isRotatingMouse = true;
+                _isRotatingTouch = false;
+            }
 
-        if (Input.GetMouseButtonUp(0))
-            _isRotatingMouse = false;
+            if (Input.GetMouseButtonUp(0))
+                _isRotatingMouse = false;
 
-        if (_isRotatingMouse)
-        {
-            float horizontal = Input.GetAxis("Mouse X") * _rotationSpeed * Time.deltaTime;
-            float vertical = -Input.GetAxis("Mouse Y") * _rotationSpeed * Time.deltaTime;
+            if (_isRotatingMouse)
+            {
+                float horizontal = Input.GetAxis("Mouse X") * _rotationSpeed * Time.deltaTime;
+                float vertical = -Input.GetAxis("Mouse Y") * _rotationSpeed * Time.deltaTime;
 
-            _targetEulerAngles.x += vertical;
-            _targetEulerAngles.y += horizontal;
+                _targetEulerAngles.x += vertical;
+                _targetEulerAngles.y += horizontal;
+            }
         }
     }
 
     private void HandleMouseZoom()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0.0f)
+        if(!EventSystem.current.IsPointerOverGameObject())
         {
-            _targetDistance -= scroll * _zoomSpeed;
-            _targetDistance = Mathf.Clamp(_targetDistance, _minDistance, _maxDistance);
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0.0f)
+            {
+                _targetDistance -= scroll * _zoomSpeed;
+                _targetDistance = Mathf.Clamp(_targetDistance, _minDistance, _maxDistance);
+            }
         }
     }
 
