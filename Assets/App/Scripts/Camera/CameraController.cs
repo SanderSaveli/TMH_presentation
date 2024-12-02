@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -33,6 +32,9 @@ public class CameraController : MonoBehaviour, ICameraController
 
     private void LateUpdate()
     {
+        if(_target == null)
+            return;
+
         if (Input.touchCount > 0)
         {
             if (Input.touchCount == 1)
@@ -156,11 +158,10 @@ public class CameraController : MonoBehaviour, ICameraController
 
         _currentEulerAngles = new Vector3(Mathf.Clamp(_currentEulerAngles.x, _minHeight, _maxHeight), _currentEulerAngles.y, _currentEulerAngles.z);
         _targetEulerAngles = new Vector3(Mathf.Clamp(_targetEulerAngles.x, _minHeight, _maxHeight), _targetEulerAngles.y, _targetEulerAngles.z);
-
         _currentEulerAngles = Vector3.Lerp(_currentEulerAngles, _targetEulerAngles, Time.deltaTime * _smoothingSpeed);
 
         Quaternion rotation = Quaternion.Euler(_currentEulerAngles);
-        Debug.Log(_currentEulerAngles);
+        
         transform.position = _target.position - rotation * Vector3.forward * _distanceToTarget;
         transform.LookAt(_target);
     }
@@ -169,8 +170,8 @@ public class CameraController : MonoBehaviour, ICameraController
     {
         _target = target;
         _distanceToTarget = Vector3.Distance(transform.position, _target.position);
-        _targetDistance = _distanceToTarget;
+        _targetDistance = _maxDistance;
         _currentEulerAngles = transform.eulerAngles;
-        _targetEulerAngles = _currentEulerAngles;
+        _targetEulerAngles = new Vector3(25f, 0f, 0f);
     }
 }
