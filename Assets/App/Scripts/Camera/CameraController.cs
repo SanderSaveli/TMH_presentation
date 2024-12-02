@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour, ICameraController
 {
     [SerializeField] private Transform _target;
+    [SerializeField] private RawImage _renderTargetImage;
+    [SerializeField] private Camera _renderCamera;
     [SerializeField] private float _mouseRotationSpeed = 100.0f, _mouseZoomSpeed = 2.0f, _touchRotationSpeed = 100.0f, _touchZoomSpeed = 2.0f;
     [SerializeField] private float _minDistance = 5.0f, _maxDistance = 20.0f;
     [SerializeField] private float _minHeight = 0f, _maxHeight = 89f;
@@ -63,7 +66,7 @@ public class CameraController : MonoBehaviour, ICameraController
     {
         Touch touch = Input.GetTouch(0);
 
-        if(!EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+        if (IsPointerOverRawImage(touch.position))
         {
             if (touch.phase == TouchPhase.Began)
             {
@@ -96,7 +99,7 @@ public class CameraController : MonoBehaviour, ICameraController
         Touch touch1 = Input.GetTouch(0);
         Touch touch2 = Input.GetTouch(1);
 
-        if(!EventSystem.current.IsPointerOverGameObject(touch1.fingerId) && !EventSystem.current.IsPointerOverGameObject(touch2.fingerId))
+        if (IsPointerOverRawImage(touch1.position) && IsPointerOverRawImage(touch2.position))
         {
             if (touch2.phase == TouchPhase.Began)
             {
@@ -119,31 +122,31 @@ public class CameraController : MonoBehaviour, ICameraController
 
     private void HandleMouseRotation()
     {
-        if(!EventSystem.current.IsPointerOverGameObject())
+        Vector3 mousePosition = Input.mousePosition;
+        if (Input.GetMouseButtonDown(0) && IsPointerOverRawImage(mousePosition))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                _isRotatingMouse = true;
-                _isRotatingTouch = false;
-            }
+            _isRotatingMouse = true;
+            _isRotatingTouch = false;
+        }
 
-            if (Input.GetMouseButtonUp(0))
-                _isRotatingMouse = false;
+        if (Input.GetMouseButtonUp(0))
+            _isRotatingMouse = false;
 
-            if (_isRotatingMouse)
-            {
-                float horizontal = Input.GetAxis("Mouse X") * _mouseRotationSpeed * Time.deltaTime;
-                float vertical = -Input.GetAxis("Mouse Y") * _mouseRotationSpeed * Time.deltaTime;
+        if (_isRotatingMouse)
+        {
+            float horizontal = Input.GetAxis("Mouse X") * _mouseRotationSpeed * Time.deltaTime;
+            float vertical = -Input.GetAxis("Mouse Y") * _mouseRotationSpeed * Time.deltaTime;
 
-                _targetEulerAngles.x += vertical;
-                _targetEulerAngles.y += horizontal;
-            }
+            _targetEulerAngles.x += vertical;
+            _targetEulerAngles.y += horizontal;
         }
     }
 
     private void HandleMouseZoom()
     {
-        if(!EventSystem.current.IsPointerOverGameObject())
+        Vector3 mousePosition = Input.mousePosition;
+
+        if (IsPointerOverRawImage(mousePosition))
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0.0f)
@@ -166,6 +169,27 @@ public class CameraController : MonoBehaviour, ICameraController
         
         transform.position = _target.position - rotation * Vector3.forward * _distanceToTarget;
         transform.LookAt(_target);
+    }
+
+    private bool IsPointerOverRawImage(Vector2 screenPosition)
+    {
+        if (_renderTargetImage == null) return false;
+
+        RectTransform rectTransform = _renderTargetImage.rectTransform;
+        Rect screenRect = RectTransformToScreenSpace(rectTransform);
+        return screenRect.Contains(screenPosition);
+    }
+
+    private Rect RectTransformToScreenSpace(RectTransform transform)
+    {
+        Vector3[] corners = new Vector3[4];
+        transform.GetWorldCorners(corners);
+        return new Rect(
+            corners[0].x,
+            corners[0].y,
+            corners[2].x - corners[0].x,
+            corners[2].y - corners[0].y
+        );
     }
 
     public void SetTarget(Transform target)

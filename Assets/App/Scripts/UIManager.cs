@@ -9,8 +9,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform _trainsRectTransform;
     [SerializeField] private RectTransform _enterprisesRectTransform;
 
-    [SerializeField] private Camera _mainCamera;
-    [SerializeField] private Color _solidColor;
     [SerializeField] private CinemachineVirtualCamera _cinemachineStartCamera;
     [SerializeField] private CinemachineVirtualCamera _cinemachineMainCamera;
     [SerializeField] private float _transitionDuration = 1f;
@@ -19,9 +17,6 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        _mainCamera.clearFlags = CameraClearFlags.SolidColor;
-        _mainCamera.backgroundColor = _solidColor;
-
         _cinemachineStartCamera.Priority = 10;
         _cinemachineMainCamera.Priority = 0;
 
@@ -35,20 +30,15 @@ public class UIManager : MonoBehaviour
 
         _isInMainScene = true;
 
-        // Завершаем текущие анимации интерфейса и цвета, чтобы избежать наложений
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         _menuRectTransform.DOKill();
         _trainsRectTransform.DOKill();
-        _mainCamera.DOKill();
 
-        // Анимация перехода камеры на Skybox
-        _mainCamera.DOColor(Color.black, _transitionDuration);
-        _mainCamera.clearFlags = CameraClearFlags.Skybox;
-
-        // Анимация интерфейса
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         _menuRectTransform.DOAnchorPos(new Vector2(Screen.width, 0), _transitionDuration);
         _trainsRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
 
-        // Переключение камеры
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         _cinemachineStartCamera.Priority = 0;
         _cinemachineMainCamera.Priority = 10;
     }
@@ -59,27 +49,22 @@ public class UIManager : MonoBehaviour
 
         _isInMainScene = false;
 
-        // Завершаем текущие анимации интерфейса и цвета
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
         _menuRectTransform.DOKill();
         _trainsRectTransform.DOKill();
-        _mainCamera.DOKill();
 
-        // Анимация возврата камеры
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         _menuRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
         _trainsRectTransform.DOAnchorPos(new Vector2(-Screen.width, 0), _transitionDuration);
 
-        // Включаем solidColor только после завершения анимации
-        _mainCamera.DOColor(_solidColor, _transitionDuration)
-            .OnComplete(() => _mainCamera.clearFlags = CameraClearFlags.SolidColor);
-
-        // Переключение камеры
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         _cinemachineStartCamera.Priority = 10;
         _cinemachineMainCamera.Priority = 0;
     }
 
     public void OpenEnterprisesVindow()
     {
-        // Завершаем текущие анимации интерфейса
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         _menuRectTransform.DOKill();
         _enterprisesRectTransform.DOKill();
 
@@ -89,7 +74,7 @@ public class UIManager : MonoBehaviour
 
     public void ReturnFromEnterprises()
     {
-        // Завершаем текущие анимации интерфейса
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         _menuRectTransform.DOKill();
         _enterprisesRectTransform.DOKill();
 
