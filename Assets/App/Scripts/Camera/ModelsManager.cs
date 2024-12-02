@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Zenject;
 
-public class ModelManager : MonoBehaviour, IModelManager
+public class ModelsManager : MonoBehaviour, IModelManager
 {
     [SerializeField] private List<ModelDataPair> _models;
     [SerializeField] private float _animationDuration = 0.5f;
 
-    private int _currentModelIndex = 0;
     private SignalBus _signalBus;
+    
+    private int _currentModelIndex = 0;
 
     [Inject]
     public void Construct(SignalBus signalBus) => _signalBus = signalBus;

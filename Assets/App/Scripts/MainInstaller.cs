@@ -3,7 +3,7 @@ using Zenject;
 public class MainInstaller : MonoInstaller
 {
     public CameraController cameraController;
-    public ModelManager modelManager;
+    public ModelsManager modelManager;
     
     public override void InstallBindings()
     {

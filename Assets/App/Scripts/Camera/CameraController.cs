@@ -19,6 +19,8 @@ public class CameraController : MonoBehaviour, ICameraController
     private Vector2 _lastTouchPosition;
     private float _initialPinchDistance;
 
+    private readonly Vector3 INITIALROTATIONAROUNDTARGET = new Vector3(25f, 0f, 0f);
+
     private void Start()
     {
         if (_target == null) 
@@ -172,6 +174,6 @@ public class CameraController : MonoBehaviour, ICameraController
         _distanceToTarget = Vector3.Distance(transform.position, _target.position);
         _targetDistance = _maxDistance;
         _currentEulerAngles = transform.eulerAngles;
-        _targetEulerAngles = new Vector3(25f, 0f, 0f);
+        _targetEulerAngles = INITIALROTATIONAROUNDTARGET;
     }
 }
