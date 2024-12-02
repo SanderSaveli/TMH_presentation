@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 463482175}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: b9aef81e88d23d141a9184adebb0cd3d, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -770,7 +770,7 @@ GameObject:
   - component: {fileID: 578840660}
   - component: {fileID: 578840659}
   m_Layer: 5
-  m_Name: Products Canvas Group
+  m_Name: Enterprise Scene Canvas Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1079,6 +1079,8 @@ GameObject:
   - component: {fileID: 855604693}
   - component: {fileID: 855604692}
   - component: {fileID: 855604691}
+  - component: {fileID: 855604696}
+  - component: {fileID: 855604695}
   m_Layer: 5
   m_Name: Products Camera Render Texture Image
   m_TagString: Untagged
@@ -1173,6 +1175,48 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855604689}
   m_CullTransparentMesh: 1
+--- !u!114 &855604695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855604689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6ad3fc464acb43c6834e5cdc3f4345a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  screenCamera: {fileID: 1957309709}
+  screenCaster: {fileID: 314561676}
+--- !u!223 &855604696
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855604689}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &871770832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1373,7 +1417,6 @@ GameObject:
   - component: {fileID: 1064450807}
   - component: {fileID: 1064450806}
   - component: {fileID: 1064450805}
-  - component: {fileID: 1064450808}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: Untagged
@@ -1455,30 +1498,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1064450808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064450804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a75e35e7388c481b99db79df8e1b5ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _target: {fileID: 579890122}
-  _renderTargetImage: {fileID: 0}
-  _renderCamera: {fileID: 0}
-  _mouseRotationSpeed: 100
-  _mouseZoomSpeed: 2
-  _touchRotationSpeed: 1800
-  _touchZoomSpeed: 800
-  _minDistance: 5
-  _maxDistance: 20
-  _minHeight: 0
-  _maxHeight: 89
-  _smoothingSpeed: 5
 --- !u!1 &1094096355
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,5 +2630,5 @@ SceneRoots:
   - {fileID: 1064450807}
   - {fileID: 1957309710}
   - {fileID: 1094096356}
-  - {fileID: 729205532}
   - {fileID: 969028360}
+  - {fileID: 729205532}
