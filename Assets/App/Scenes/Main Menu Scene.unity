@@ -8658,7 +8658,7 @@ GameObject:
   - component: {fileID: 981540433}
   - component: {fileID: 981540434}
   m_Layer: 5
-  m_Name: TrainCanvarGroup
+  m_Name: Train Canvas Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

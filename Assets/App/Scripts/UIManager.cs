@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
         _cinemachineMainCamera.Priority = 0;
 
         _trainsSelectRectTransform.anchoredPosition = new Vector2(-Screen.width, 0);
-        _trainsRectTransform.anchoredPosition = new Vector2(Screen.width, 0); // мб *2
+        _trainsRectTransform.anchoredPosition = new Vector2(-Screen.width, 0); // мб *2
         _enterprisesRectTransform.anchoredPosition = new Vector2(Screen.width, 0);
 
         _image.enabled = false;
@@ -162,8 +162,6 @@ public class UIManager : MonoBehaviour
         // Завершаем текущие анимации интерфейса
         _trainsSelectRectTransform.DOKill();
         _enterprisesRectTransform.DOKill();
-
-        
         
         _trainsSelectRectTransform.DOAnchorPos(Vector2.zero, _transitionDuration);
         _enterprisesRectTransform.DOAnchorPos(new Vector2(Screen.width, 0), _transitionDuration);
