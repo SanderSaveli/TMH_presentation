@@ -880,8 +880,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 579890122}
-  _rotationSpeed: 2000
-  _zoomSpeed: 1000
+  _mouseRotationSpeed: 100
+  _mouseZoomSpeed: 2
+  _touchRotationSpeed: 1800
+  _touchZoomSpeed: 800
   _minDistance: 5
   _maxDistance: 20
   _smoothingSpeed: 5

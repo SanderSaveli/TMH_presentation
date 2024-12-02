@@ -1,11 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour, ICameraController
 {
     [SerializeField] private Transform _target;
-    [SerializeField] private float _rotationSpeed = 100.0f, _zoomSpeed = 2.0f;
+    [SerializeField] private float _mouseRotationSpeed = 100.0f, _mouseZoomSpeed = 2.0f, _touchRotationSpeed = 100.0f, _touchZoomSpeed = 2.0f;
     [SerializeField] private float _minDistance = 5.0f, _maxDistance = 20.0f;
+    [SerializeField] private float _minHeight = 0f, _maxHeight = 89f;
     [SerializeField] private float _smoothingSpeed = 5.0f;
 
     private Vector3 _currentEulerAngles;
@@ -26,10 +28,7 @@ public class CameraController : MonoBehaviour, ICameraController
             return;
         }
 
-        _distanceToTarget = Vector3.Distance(transform.position, _target.position);
-        _targetDistance = _distanceToTarget;
-        _currentEulerAngles = transform.eulerAngles;
-        _targetEulerAngles = _currentEulerAngles;
+        SetTarget(_target);
     }
 
     private void LateUpdate()
@@ -72,8 +71,8 @@ public class CameraController : MonoBehaviour, ICameraController
             {
                 Vector2 delta = touch.position - _lastTouchPosition;
 
-                float horizontal = delta.x * _rotationSpeed * Time.deltaTime / Screen.width;
-                float vertical = -delta.y * _rotationSpeed * Time.deltaTime / Screen.height;
+                float horizontal = delta.x * _touchRotationSpeed * Time.deltaTime / Screen.width;
+                float vertical = -delta.y * _touchRotationSpeed * Time.deltaTime / Screen.height;
 
                 _targetEulerAngles.x += vertical;
                 _targetEulerAngles.y += horizontal;
@@ -106,7 +105,7 @@ public class CameraController : MonoBehaviour, ICameraController
                 float currentDistance = Vector2.Distance(touch1.position, touch2.position);
                 float pinchDelta = currentDistance - _initialPinchDistance;
 
-                _targetDistance -= pinchDelta * _zoomSpeed * Time.deltaTime / Screen.width;
+                _targetDistance -= pinchDelta * _touchZoomSpeed * Time.deltaTime / Screen.width;
                 _targetDistance = Mathf.Clamp(_targetDistance, _minDistance, _maxDistance);
 
                 _initialPinchDistance = currentDistance;
@@ -129,8 +128,8 @@ public class CameraController : MonoBehaviour, ICameraController
 
             if (_isRotatingMouse)
             {
-                float horizontal = Input.GetAxis("Mouse X") * _rotationSpeed * Time.deltaTime;
-                float vertical = -Input.GetAxis("Mouse Y") * _rotationSpeed * Time.deltaTime;
+                float horizontal = Input.GetAxis("Mouse X") * _mouseRotationSpeed * Time.deltaTime;
+                float vertical = -Input.GetAxis("Mouse Y") * _mouseRotationSpeed * Time.deltaTime;
 
                 _targetEulerAngles.x += vertical;
                 _targetEulerAngles.y += horizontal;
@@ -145,7 +144,7 @@ public class CameraController : MonoBehaviour, ICameraController
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0.0f)
             {
-                _targetDistance -= scroll * _zoomSpeed;
+                _targetDistance -= scroll * _mouseZoomSpeed;
                 _targetDistance = Mathf.Clamp(_targetDistance, _minDistance, _maxDistance);
             }
         }
@@ -155,9 +154,13 @@ public class CameraController : MonoBehaviour, ICameraController
     {
         _distanceToTarget = Mathf.Lerp(_distanceToTarget, _targetDistance, Time.deltaTime * _smoothingSpeed);
 
+        _currentEulerAngles = new Vector3(Mathf.Clamp(_currentEulerAngles.x, _minHeight, _maxHeight), _currentEulerAngles.y, _currentEulerAngles.z);
+        _targetEulerAngles = new Vector3(Mathf.Clamp(_targetEulerAngles.x, _minHeight, _maxHeight), _targetEulerAngles.y, _targetEulerAngles.z);
+
         _currentEulerAngles = Vector3.Lerp(_currentEulerAngles, _targetEulerAngles, Time.deltaTime * _smoothingSpeed);
 
         Quaternion rotation = Quaternion.Euler(_currentEulerAngles);
+        Debug.Log(_currentEulerAngles);
         transform.position = _target.position - rotation * Vector3.forward * _distanceToTarget;
         transform.LookAt(_target);
     }
