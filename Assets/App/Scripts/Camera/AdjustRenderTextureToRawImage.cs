@@ -25,7 +25,6 @@ public class AdjustRenderTextureToRawImage : MonoBehaviour
         if (width == _currentWidth && height == _currentHeight)
             return;
 
-
         _currentWidth = width;
         _currentHeight = height;
 

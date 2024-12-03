@@ -21,7 +21,7 @@ public class ModelsViewManager : MonoBehaviour
 
     private void OnModelSelected(EventInputSelectModel ctx)
     {
-        _modelManager.ShowModel(ctx.modelIndex);
+        _modelManager.ShowModel(ctx.ModelIndex);
         _cameraController.SetTarget(_modelManager.GetCurrentModelTransform());
     }
 

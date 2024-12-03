@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface ICameraController
 {
-    void SetTarget(Transform target);
+   public void SetTarget(Transform target);
 }

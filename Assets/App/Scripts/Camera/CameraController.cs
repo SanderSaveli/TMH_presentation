@@ -88,9 +88,7 @@ public class CameraController : MonoBehaviour, ICameraController
             }
 
             if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-            {
                 _isRotatingTouch = false;
-            }
         }
     }
 
@@ -173,7 +171,8 @@ public class CameraController : MonoBehaviour, ICameraController
 
     private bool IsPointerOverRawImage(Vector2 screenPosition)
     {
-        if (_renderTargetImage == null) return false;
+        if (_renderTargetImage == null) 
+            return false;
 
         RectTransform rectTransform = _renderTargetImage.rectTransform;
         Rect screenRect = RectTransformToScreenSpace(rectTransform);
