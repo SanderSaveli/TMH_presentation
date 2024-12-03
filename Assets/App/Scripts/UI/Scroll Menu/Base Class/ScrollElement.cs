@@ -12,7 +12,7 @@ public abstract class ScrollElement : MonoBehaviour, IPointerClickHandler
     public RectTransform RectTransform { get; private set; }
 
     protected int Index { get; private set; }
-    
+
     [SerializeField, Min(0)] protected float _sizeIncrease = 10f; 
     [SerializeField] protected Color _selectedColor = Color.white;
     [SerializeField] protected Color _deselectedColor = Color.gray;
@@ -20,9 +20,10 @@ public abstract class ScrollElement : MonoBehaviour, IPointerClickHandler
     protected Image _image;
     protected Vector2 _originalSize;
 
-    protected virtual void Start()
+    protected void Awake()
     {
         _image = GetComponent<Image>();
+        RectTransform = GetComponent<RectTransform>();
 
         if (_image == null)
             Debug.LogWarning($"{nameof(ScrollElement)}: Image component is missing on {gameObject.name}.");
@@ -34,7 +35,6 @@ public abstract class ScrollElement : MonoBehaviour, IPointerClickHandler
 
     public virtual void Initialize(int index)
     {
-        RectTransform = GetComponent<RectTransform>();
         Index = index;
     }
 

@@ -6,27 +6,29 @@ using System.Collections.Generic;
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollSelector : MonoBehaviour
 {
-    [SerializeField] protected RectTransform selectPosition;
-    [SerializeField] protected RectTransform content;
-    [SerializeField] protected float smoothTime = 0.2f;
-    [SerializeField] protected float scrollDeadZone = 0.1f;
-    [SerializeField] protected float delayBetweenElements = 0.25f;
-    [SerializeField][Min(0)] protected int startSelectedIndex = 0;
+    [SerializeField] protected RectTransform _selectPosition;
+    [SerializeField] protected RectTransform _content;
+    [SerializeField] protected float _smoothTime = 0.2f;
+    [SerializeField] protected float _scrollDeadZone = 0.1f;
+    [SerializeField] protected float _delayBetweenElements = 0.25f;
+    [SerializeField][Min(0)] protected int _startSelectedIndex = 0;
 
-    protected int selectedIndex = -1;
-    protected ScrollRect scrollRect;
-    protected List<ScrollElement> elements = new();
-    protected Vector3 targetPosition;
+    protected int _selectedIndex = -1;
+    protected ScrollRect _scrollRect;
+    protected List<ScrollElement> _elements = new();
+    protected Vector3 _targetPosition;
 
-    protected bool isWatchingScroll = false;
+    protected bool _isWatchingScroll = false;
+
+    protected ScrollElement _targetElement;
 
     protected void OnEnable()
     {
-        scrollRect = GetComponent<ScrollRect>();
-        scrollRect.onValueChanged.AddListener(OnScroll);
+        _scrollRect = GetComponent<ScrollRect>();
+        _scrollRect.onValueChanged.AddListener(OnScroll);
     }
 
-    protected void Awake()
+    protected virtual void Start() 
     {
         InitializeElements();
         StartCoroutine(WaitAndSelect());
@@ -35,40 +37,40 @@ public class ScrollSelector : MonoBehaviour
     protected void Update()
     {
         if (Input.GetMouseButton(0) || Input.mouseScrollDelta.y != 0)
-            isWatchingScroll = true;
+            _isWatchingScroll = true;
         else
         {
-            isWatchingScroll = false;
+            _isWatchingScroll = false;
             SmoothScrollToSelected();
         }
     }
 
     protected void InitializeElements()
     {
-        elements.Clear();
+        _elements.Clear();
 
-        for (int i = 0; i < content.childCount; i++)
+        for (int i = 0; i < _content.childCount; i++)
         {
-            ScrollElement element = content.GetChild(i).GetComponent<ScrollElement>();
+            ScrollElement element = _content.GetChild(i).GetComponent<ScrollElement>();
             element.Initialize(i);
 
-            float delay = Mathf.Abs(startSelectedIndex - i) * delayBetweenElements;
-            elements.Add(element);
+            float delay = Mathf.Abs(_startSelectedIndex - i) * _delayBetweenElements;
+            _elements.Add(element);
             element.OnClicked += SelectElement;
         }
     }
 
     protected void OnScroll(Vector2 scrollPosition)
     {
-        if (!isWatchingScroll)
+        if (!_isWatchingScroll)
             return;
 
         float minDistanceToCenter = float.MaxValue;
         int closestIndex = 0;
 
-        for (int i = 0; i < elements.Count; i++)
+        for (int i = 0; i < _elements.Count; i++)
         {
-            float distanceToCenter = (elements[i].RectTransform.position - selectPosition.position).sqrMagnitude;
+            float distanceToCenter = (_elements[i].RectTransform.position - _selectPosition.position).sqrMagnitude;
 
             if (distanceToCenter < minDistanceToCenter)
             {
@@ -82,50 +84,50 @@ public class ScrollSelector : MonoBehaviour
 
     protected virtual void SelectElement(int index)
     {
-        if (selectedIndex == index)
+        if (_selectedIndex == index)
             return;
 
-        DeselectElement(selectedIndex);
+        DeselectElement(_selectedIndex);
 
-        ScrollElement targetElement = elements[index];
-        targetPosition = CalculateTargetPosition(targetElement.RectTransform.position);
-        targetElement.Select();
-        selectedIndex = index;
+        _targetElement = _elements[index];
+        _targetPosition = CalculateTargetPosition(_targetElement.RectTransform.position);
+        _targetElement.Select();
+        _selectedIndex = index;
     }
 
     protected void DeselectElement(int index)
     {
-        if (index >= 0 && index < elements.Count)
-            elements[index].Deselect();
+        if (index >= 0 && index < _elements.Count)
+            _elements[index].Deselect();
     }
 
     protected Vector3 CalculateTargetPosition(Vector3 elementPosition)
     {
-        return selectPosition.position + (content.position - elementPosition);
+        return _selectPosition.position + (_content.position - elementPosition);
     }
 
     protected void SmoothScrollToSelected()
     {
-        if (selectedIndex < 0)
+        if (_selectedIndex < 0)
             return;
 
-        targetPosition = CalculateTargetPosition(elements[selectedIndex].RectTransform.position);
+        _targetPosition = CalculateTargetPosition(_elements[_selectedIndex].RectTransform.position);
 
-        if ((content.position - targetPosition).sqrMagnitude > scrollDeadZone * scrollDeadZone)
-            content.position = Vector3.Lerp(content.position, targetPosition, smoothTime * Time.deltaTime);
+        if ((_content.position - _targetPosition).sqrMagnitude > _scrollDeadZone * _scrollDeadZone)
+            _content.position = Vector3.Lerp(_content.position, _targetPosition, _smoothTime * Time.deltaTime);
     }
 
     protected IEnumerator WaitAndSelect()
     {
         yield return new WaitForSeconds(0.01f);
-        SelectElement(startSelectedIndex);
+        SelectElement(_startSelectedIndex);
     }
 
     protected void OnDisable()
     {
-        scrollRect.onValueChanged.RemoveListener(OnScroll);
+        _scrollRect.onValueChanged.RemoveListener(OnScroll);
 
-        foreach (var element in elements)
+        foreach (var element in _elements)
             element.OnClicked -= SelectElement;
     }
 }

@@ -32,14 +32,14 @@ public class ModelNameView : MonoBehaviour
             return;
         }
 
-        if (ctx?.ModelData == null)
+        if (ctx?.ObjectInfo == null)
         {
-            Debug.LogWarning($"{nameof(ModelNameView)}: ModelData is null.");
+            Debug.LogWarning($"{nameof(ModelNameView)}: ObjectInfo is null.");
             _text.text = "No Model Selected";
             return;
         }
 
-        _text.text = ctx.ModelData.Name;
+        _text.text = ctx.ObjectInfo.Name;
     }
 
     private void OnDisable()

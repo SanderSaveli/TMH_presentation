@@ -1080,7 +1080,6 @@ GameObject:
   - component: {fileID: 855604692}
   - component: {fileID: 855604691}
   - component: {fileID: 855604696}
-  - component: {fileID: 855604695}
   m_Layer: 5
   m_Name: Products Camera Render Texture Image
   m_TagString: Untagged
@@ -1175,25 +1174,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 855604689}
   m_CullTransparentMesh: 1
---- !u!114 &855604695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 855604689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6ad3fc464acb43c6834e5cdc3f4345a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  screenCamera: {fileID: 1957309709}
-  screenCaster: {fileID: 314561676}
 --- !u!223 &855604696
 Canvas:
   m_ObjectHideFlags: 0

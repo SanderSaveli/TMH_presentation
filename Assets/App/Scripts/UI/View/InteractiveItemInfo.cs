@@ -36,9 +36,9 @@ public class InteractiveItemInfo : MonoBehaviour
 
     public void UpdateDescription(EventNewModelSelected ctx)
     {
-        if (ctx?.ModelData == null)
+        if (ctx?.ObjectInfo == null)
         {
-            Debug.LogWarning($"{nameof(InteractiveItemInfo)}: ModelData is null.");
+            Debug.LogWarning($"{nameof(InteractiveItemInfo)}: ObjectInfo is null.");
             return;
         }
 
@@ -46,12 +46,12 @@ public class InteractiveItemInfo : MonoBehaviour
             _descriptionPanel.SetActive(true);
 
         if (_name != null)
-            _name.text = ctx.ModelData.Name;
+            _name.text = ctx.ObjectInfo.Name;
 
         if (_currentCoroutine != null)
             StopCoroutine(_currentCoroutine);
 
-        _currentCoroutine = StartCoroutine(AnimateText(ctx.ModelData.Description));
+        _currentCoroutine = StartCoroutine(AnimateText(ctx.ObjectInfo.Description));
     }
 
     private IEnumerator AnimateText(string fullText)

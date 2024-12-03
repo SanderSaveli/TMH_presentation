@@ -1,6 +1,6 @@
 public class EventNewModelSelected
 {
-    public ModelData ModelData;
+    public ObjectInfo ObjectInfo;
 
-    public EventNewModelSelected(ModelData modelData) => ModelData = modelData;
+    public EventNewModelSelected(ObjectInfo objectInfo) => ObjectInfo = objectInfo;
 }

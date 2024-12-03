@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Zenject;
 
-public class ModelsManager : MonoBehaviour, IModelManager
+public class ProductsManager : MonoBehaviour, IModelManager
 {
-    [SerializeField] private List<ModelDataPair> _models;
+    [SerializeField] private List<ObjectInfoPair> _models;
     [SerializeField] private float _animationDuration = 0.5f;
 
     private SignalBus _signalBus;
     
-    private int _currentModelIndex = 0;
+    private int _currentModelIndex;
 
     [Inject]
     public void Construct(SignalBus signalBus) => _signalBus = signalBus;
@@ -18,12 +18,14 @@ public class ModelsManager : MonoBehaviour, IModelManager
     private void Awake()
     {
         if (_models == null || _models.Count == 0)
-            Debug.LogError("Model list is empty or null!");
+            Debug.LogError("Products list is empty or null!");
+
+        LoadCurrentProduct();
     }
 
     private void Start()
     {
-        LoadCurrentModel();
+        LoadCurrentProduct();
         ShowModel(_currentModelIndex);
     }
 
@@ -56,11 +58,7 @@ public class ModelsManager : MonoBehaviour, IModelManager
         nextModel.SetActive(true);
         nextModel.transform.DOScale(Vector3.one, _animationDuration);
 
-        _signalBus.Fire(new EventNewModelSelected(_models[_currentModelIndex].ModelData));
-
-        Debug.Log($"Model switched to index: {_currentModelIndex}, Name: {_models[_currentModelIndex].ModelData.Name}");
-
-        SaveCurrentModel();
+        _signalBus.Fire(new EventNewModelSelected(_models[_currentModelIndex].ObjectInfo));
     }
 
     public Transform GetCurrentModelTransform()
@@ -74,7 +72,7 @@ public class ModelsManager : MonoBehaviour, IModelManager
         return _models[_currentModelIndex].Model.transform;
     }
 
-    public ModelData GetCurrentModelData()
+    public ObjectInfo GetCurrentObjectInfo()
     {
         if (_models == null || _models.Count == 0 || _currentModelIndex >= _models.Count)
         {
@@ -82,10 +80,10 @@ public class ModelsManager : MonoBehaviour, IModelManager
             return null;
         }
 
-        return _models[_currentModelIndex].ModelData;
+        return _models[_currentModelIndex].ObjectInfo;
     }
 
-    public ModelData GetModelData(int index)
+    public ObjectInfo GetObjectInfo(int index)
     {
         if (index < 0 || index >= _models.Count)
         {
@@ -93,21 +91,15 @@ public class ModelsManager : MonoBehaviour, IModelManager
             return null;
         }
 
-        return _models[index].ModelData;
+        return _models[index].ObjectInfo;
     }
 
-    private void SaveCurrentModel()
-    {
-        PlayerPrefs.SetInt("CurrentModelIndex", _currentModelIndex);
-        PlayerPrefs.Save();
-    }
-
-    private void LoadCurrentModel() => _currentModelIndex = PlayerPrefs.GetInt("CurrentModelIndex", 0);
+    private void LoadCurrentProduct() => _currentModelIndex = PlayerPrefsManager.LoadProductIndex() % 2; //Временно, пока поезда всего два, а кнопок 5
 }
 
 [System.Serializable]
-public class ModelDataPair
+public class ObjectInfoPair
 {
     public GameObject Model;
-    public ModelData ModelData;
+    public ObjectInfo ObjectInfo;
 }

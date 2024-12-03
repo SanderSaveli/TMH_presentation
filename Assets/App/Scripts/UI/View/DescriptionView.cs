@@ -24,16 +24,16 @@ public class DescriptionView : MonoBehaviour
             return;
         }
 
-        if (ctx?.ModelData?.Description == null)
+        if (ctx?.ObjectInfo?.Description == null)
         {
-            Debug.LogWarning($"{nameof(DescriptionView)}: ModelData or Description is null.");
+            Debug.LogWarning($"{nameof(DescriptionView)}: ObjectInfo or Description is null.");
             return;
         }
 
         if (_currentCoroutine != null)
             StopCoroutine(_currentCoroutine);
 
-        _currentCoroutine = StartCoroutine(AnimateText(ctx.ModelData.Description));
+        _currentCoroutine = StartCoroutine(AnimateText(ctx.ObjectInfo.Description));
     }
 
     private IEnumerator AnimateText(string fullText)

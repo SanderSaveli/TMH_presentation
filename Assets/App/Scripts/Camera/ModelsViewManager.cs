@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-public class ModelsViewManager : MonoBehaviour
+public class ProductsViewManager : MonoBehaviour
 {
     private SignalBus _signalBus;
     private ICameraController _cameraController;

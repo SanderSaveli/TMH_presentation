@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 789791}
   - component: {fileID: 789793}
   - component: {fileID: 789794}
+  - component: {fileID: 789795}
   m_Layer: 5
   m_Name: Enterprise 5 Button
   m_TagString: Untagged
@@ -270,6 +271,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &789795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u041C\u0435\u0442\u0440\u043E\u0432\u0430\u0433\u043E\u043D\u043C\u0430\u0448"
 --- !u!1 &2924123
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,15 +408,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 11279173}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edad5f1a19afb1040aafc42741f6df15, type: 3}
+  m_Script: {fileID: 11500000, guid: 840555eee87714915ae3478108afc038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPosition: {fileID: 2924124}
-  content: {fileID: 1151561749}
-  smoothTime: 0.2
-  scrollDeadZone: 0.1
-  delayBetweenElements: 0.25
-  startSelectedIndex: 0
+  _selectPosition: {fileID: 2924124}
+  _content: {fileID: 1151561749}
+  _smoothTime: 5
+  _scrollDeadZone: 0.1
+  _delayBetweenElements: 0.25
+  _startSelectedIndex: 0
 --- !u!1001 &38880252
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -410,7 +427,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1756464774094550, guid: 6e35b9c040b5a1248ab789b5a16c9af8, type: 3}
       propertyPath: m_Name
-      value: Industrial Train Dr14
+      value: Red Train
       objectReference: {fileID: 0}
     - target: {fileID: 4082935477391056, guid: 6e35b9c040b5a1248ab789b5a16c9af8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -695,6 +712,7 @@ GameObject:
   - component: {fileID: 100163626}
   - component: {fileID: 100163628}
   - component: {fileID: 100163629}
+  - component: {fileID: 100163630}
   m_Layer: 5
   m_Name: Enterprise 2 Button
   m_TagString: Untagged
@@ -830,6 +848,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &100163630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100163624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u0414\u0435\u043C\u0438\u0445\u043E\u0432\u0441\u043A\u0438\u0439
+    \u041C\u0430\u0448\u0438\u043D\u043E\u0441\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439
+    \u0437\u0430\u0432\u043E\u0434"
 --- !u!1 &100894813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,10 +1160,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 434395578}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &187785651
 MonoBehaviour:
@@ -1149,7 +1185,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: "\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u043F\u0440\u0435\u0434\u043F\u0440\u0438\u044F\u0442\u0438\u044F"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1759,10 +1795,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 082b3db063197a0458d7e08692ff75b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _modelIndex: 0
   _sizeIncrease: 50
   _selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  _deselectedColor: {r: 1, g: 1, b: 1, a: 0.3254902}
+  _deselectedColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 0.5019608}
+  _modelIndex: 0
 --- !u!114 &234124842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2361,6 +2397,7 @@ GameObject:
   - component: {fileID: 358432134}
   - component: {fileID: 358432136}
   - component: {fileID: 358432137}
+  - component: {fileID: 358432138}
   m_Layer: 5
   m_Name: Enterprise 6 Button
   m_TagString: Untagged
@@ -2496,6 +2533,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &358432138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358432132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u041F\u0414"
 --- !u!1 &378382513
 GameObject:
   m_ObjectHideFlags: 0
@@ -2750,10 +2803,10 @@ MonoBehaviour:
   m_Content: {fileID: 1391320048}
   m_Horizontal: 1
   m_Vertical: 0
-  m_MovementType: 2
+  m_MovementType: 0
   m_Elasticity: 0.1
   m_Inertia: 1
-  m_DecelerationRate: 0.135
+  m_DecelerationRate: 0.14
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 1309291065}
   m_HorizontalScrollbar: {fileID: 0}
@@ -2782,15 +2835,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 434395577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edad5f1a19afb1040aafc42741f6df15, type: 3}
+  m_Script: {fileID: 11500000, guid: f8ab29b72091c4fefb66bb88e6521cd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPosition: {fileID: 1953183891}
-  content: {fileID: 1309291065}
-  smoothTime: 0.2
-  scrollDeadZone: 0.1
-  delayBetweenElements: 0.25
-  startSelectedIndex: 0
+  _selectPosition: {fileID: 1953183891}
+  _content: {fileID: 1391320048}
+  _smoothTime: 5
+  _scrollDeadZone: 0.1
+  _delayBetweenElements: 0.25
+  _startSelectedIndex: 0
+  _enterpriseNameText: {fileID: 187785651}
 --- !u!1 &451393825
 GameObject:
   m_ObjectHideFlags: 0
@@ -3379,10 +3433,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 082b3db063197a0458d7e08692ff75b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _modelIndex: 1
   _sizeIncrease: 50
   _selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  _deselectedColor: {r: 1, g: 1, b: 1, a: 0.3254902}
+  _deselectedColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 0.5019608}
+  _modelIndex: 1
 --- !u!114 &614922544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4591,6 +4645,7 @@ GameObject:
   - component: {fileID: 1130727653}
   - component: {fileID: 1130727655}
   - component: {fileID: 1130727656}
+  - component: {fileID: 1130727657}
   m_Layer: 5
   m_Name: Enterprise 4 Button
   m_TagString: Untagged
@@ -4726,6 +4781,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &1130727657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130727651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u041A\u043E\u043B\u043E\u043C\u043D\u0430 \u041B\u043E\u043A\u043E\u043C\u043E\u0442\u0438\u0432
+    \u0417\u0430\u0432\u043E\u0434"
 --- !u!1 &1140707750
 GameObject:
   m_ObjectHideFlags: 0
@@ -5237,6 +5309,7 @@ GameObject:
   - component: {fileID: 1268505111}
   - component: {fileID: 1268505113}
   - component: {fileID: 1268505114}
+  - component: {fileID: 1268505115}
   m_Layer: 5
   m_Name: Enterprise 3 Button
   m_TagString: Untagged
@@ -5372,6 +5445,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &1268505115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268505109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u042D\u041D\u0422"
 --- !u!1 &1309291064
 GameObject:
   m_ObjectHideFlags: 0
@@ -5870,9 +5959,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _models:
   - Model: {fileID: 1187303045}
-    ModelData: {fileID: 11400000, guid: 4f5d4a19e4098da44a82ff19cfdff02e, type: 2}
+    ObjectInfo: {fileID: 11400000, guid: 4f5d4a19e4098da44a82ff19cfdff02e, type: 2}
   - Model: {fileID: 1974169366}
-    ModelData: {fileID: 11400000, guid: 394ac5bf22621ea46adc48c076b802a7, type: 2}
+    ObjectInfo: {fileID: 11400000, guid: 394ac5bf22621ea46adc48c076b802a7, type: 2}
   _animationDuration: 0.5
 --- !u!1 &1415745159
 GameObject:
@@ -6560,10 +6649,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 082b3db063197a0458d7e08692ff75b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _modelIndex: 0
   _sizeIncrease: 50
   _selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  _deselectedColor: {r: 1, g: 1, b: 1, a: 0.3254902}
+  _deselectedColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 0.5019608}
+  _modelIndex: 0
 --- !u!1 &1565179134
 GameObject:
   m_ObjectHideFlags: 3
@@ -6980,10 +7069,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 082b3db063197a0458d7e08692ff75b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _modelIndex: 1
   _sizeIncrease: 50
   _selectedColor: {r: 1, g: 1, b: 1, a: 1}
-  _deselectedColor: {r: 1, g: 1, b: 1, a: 0.3254902}
+  _deselectedColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 0.5019608}
+  _modelIndex: 1
 --- !u!1 &1868641432
 GameObject:
   m_ObjectHideFlags: 0
@@ -7302,6 +7391,7 @@ GameObject:
   - component: {fileID: 1970163641}
   - component: {fileID: 1970163643}
   - component: {fileID: 1970163644}
+  - component: {fileID: 1970163645}
   m_Layer: 5
   m_Name: Enterprise 8 Button
   m_TagString: Untagged
@@ -7437,6 +7527,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &1970163645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970163639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u0422\u0412\u0417"
 --- !u!1001 &1974169365
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7447,7 +7553,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 09419d27c38abab4cac738e2f8ee8518, type: 3}
       propertyPath: m_Name
-      value: Train Damage
+      value: Subway Train
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 09419d27c38abab4cac738e2f8ee8518, type: 3}
       propertyPath: m_IsActive
@@ -7704,6 +7810,7 @@ GameObject:
   - component: {fileID: 2009573720}
   - component: {fileID: 2009573722}
   - component: {fileID: 2009573723}
+  - component: {fileID: 2009573724}
   m_Layer: 5
   m_Name: Enterprise 1 Button
   m_TagString: Untagged
@@ -7839,6 +7946,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &2009573724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009573718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u0411\u041C\u0417"
 --- !u!1 &2010323676
 GameObject:
   m_ObjectHideFlags: 0
@@ -7852,6 +7975,7 @@ GameObject:
   - component: {fileID: 2010323678}
   - component: {fileID: 2010323680}
   - component: {fileID: 2010323681}
+  - component: {fileID: 2010323682}
   m_Layer: 5
   m_Name: Enterprise 7 Button
   m_TagString: Untagged
@@ -7987,6 +8111,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
+--- !u!114 &2010323682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2010323676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063c181dfc6554cb8971b1ca37b12d75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sizeIncrease: 50
+  _selectedColor: {r: 1, g: 1, b: 1, a: 1}
+  _deselectedColor: {r: 0.754717, g: 0.754717, b: 0.754717, a: 0.5019608}
+  _enterpriseName: "\u0412\u0417"
 --- !u!1 &2025475881
 GameObject:
   m_ObjectHideFlags: 0
@@ -8301,7 +8441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -8405,7 +8545,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 963194228}
+  - {fileID: 574843712}
   - {fileID: 2051084582}
   - {fileID: 624511205}
   - {fileID: 1248065220}
-  - {fileID: 574843712}
