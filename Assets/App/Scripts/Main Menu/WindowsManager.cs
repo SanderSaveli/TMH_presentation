@@ -1,14 +1,13 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Cinemachine;
 using DG.Tweening;
+using Cinemachine;
 
 public class WindowsManager : MonoBehaviour
 {
     [Header("UI Elements")]
-    [SerializeField] private RectTransform _menuPanel;
-    [SerializeField] private RectTransform _productsPanel;
-    [SerializeField] private RectTransform _enterprisesPanel;
+    [SerializeField] private CanvasGroup _menuPanelGroup;
+    [SerializeField] private CanvasGroup _productsPanelGroup;
+    [SerializeField] private CanvasGroup _enterprisesPanelGroup;
 
     [Header("Cameras")]
     [SerializeField] private CinemachineVirtualCamera _startCamera;
@@ -16,101 +15,84 @@ public class WindowsManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float _transitionDuration = 1f;
+    [SerializeField] private float _fadeDuration = 0.5f;
 
-    private RectTransform _currentPanel;
+    private CanvasGroup _currentPanelGroup;
+    private RectTransform _menuPanelRect;
+    private RectTransform _productsPanelRect;
+    private RectTransform _enterprisesPanelRect;
 
     private void Start()
     {
-        InitializeCameraPriorities();
-        InitializePanelPositions();
-        _currentPanel = _menuPanel; // Устанавливаем начальную панель
+        _menuPanelRect = _menuPanelGroup.GetComponent<RectTransform>();
+        _productsPanelRect = _productsPanelGroup.GetComponent<RectTransform>();
+        _enterprisesPanelRect = _enterprisesPanelGroup.GetComponent<RectTransform>();
+
+        InitializePanels();
+        _currentPanelGroup = _menuPanelGroup;
     }
 
-    private void InitializeCameraPriorities()
+    private void InitializePanels()
     {
-        SetCameraPriority(_startCamera, 10);
-        SetCameraPriority(_mainCamera, 0);
-    }
+        _menuPanelRect.anchoredPosition = Vector2.zero;
+        _productsPanelRect.anchoredPosition = new Vector2(-Screen.width, 0);
+        _enterprisesPanelRect.anchoredPosition = new Vector2(Screen.width, 0);
 
-    private void InitializePanelPositions()
-    {
-        // Устанавливаем панели на начальные позиции
-        SetPanelPosition(_menuPanel, Vector2.zero); // Центр
-        SetPanelPosition(_productsPanel, new Vector2(-Screen.width, 0)); // Слева
-        SetPanelPosition(_enterprisesPanel, new Vector2(Screen.width, 0)); // Справа
-    }
+        _menuPanelGroup.alpha = 1f;
+        _productsPanelGroup.alpha = 0f;
+        _enterprisesPanelGroup.alpha = 0f;
 
-    // === Методы открытия/закрытия окон ===
+        SetPanelInteractable(_menuPanelGroup, true);
+        SetPanelInteractable(_productsPanelGroup, false);
+        SetPanelInteractable(_enterprisesPanelGroup, false);
+    }
 
     public void OpenProductsWindow()
     {
-        if (_currentPanel == _productsPanel) return;
-
         SwitchCameraPriority(_mainCamera, _startCamera);
-        MovePanels(_productsPanel);
-        _currentPanel = _productsPanel;
-    }
-
-    public void ReturnFromProducts()
-    {
-        if (_currentPanel == _menuPanel) return;
-
-        SwitchCameraPriority(_startCamera, _mainCamera);
-        MovePanels(_menuPanel);
-        _currentPanel = _menuPanel;
+        TransitionPanels(_productsPanelGroup, _productsPanelRect);
     }
 
     public void OpenEnterprisesWindow()
     {
-        if (_currentPanel == _enterprisesPanel) return;
-
-        MovePanels(_enterprisesPanel);
-        _currentPanel = _enterprisesPanel;
+        TransitionPanels(_enterprisesPanelGroup, _enterprisesPanelRect);
     }
 
-    public void ReturnFromEnterprises()
+    public void ReturnToMenu()
     {
-        if (_currentPanel == _menuPanel) return;
-
-        MovePanels(_menuPanel);
-        _currentPanel = _menuPanel;
+        SwitchCameraPriority(_startCamera, _mainCamera);
+        TransitionPanels(_menuPanelGroup, _menuPanelRect);
     }
 
-    public void LoadEnterpriseScene()
+    private void TransitionPanels(CanvasGroup targetPanelGroup, RectTransform targetPanelRect)
     {
-        SceneManager.LoadScene(SceneNames.TestEnterpriseScene);
-    }
+        float targetOffset = -targetPanelRect.anchoredPosition.x;
 
-    // === Вспомогательные методы ===
+        _menuPanelRect.DOAnchorPosX(_menuPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
+        _productsPanelRect.DOAnchorPosX(_productsPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
+        _enterprisesPanelRect.DOAnchorPosX(_enterprisesPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
 
-    private void MovePanels(RectTransform targetPanel)
-    {
-        // Рассчитываем смещение, чтобы выбранная панель была по центру
-        float targetOffset = -targetPanel.anchoredPosition.x;
+        _currentPanelGroup.DOFade(0f, _fadeDuration).OnComplete(() =>
+        {
+            SetPanelInteractable(_currentPanelGroup, false);
+            _currentPanelGroup = targetPanelGroup;
+        });
 
-        // Останавливаем текущие анимации и начинаем новые
-        _menuPanel.DOKill();
-        _productsPanel.DOKill();
-        _enterprisesPanel.DOKill();
-
-        _menuPanel.DOAnchorPosX(_menuPanel.anchoredPosition.x + targetOffset, _transitionDuration);
-        _productsPanel.DOAnchorPosX(_productsPanel.anchoredPosition.x + targetOffset, _transitionDuration);
-        _enterprisesPanel.DOAnchorPosX(_enterprisesPanel.anchoredPosition.x + targetOffset, _transitionDuration);
-    }
-
-    private void SetCameraPriority(CinemachineVirtualCamera camera, int priority)
-    {
-        camera.Priority = priority;
+        targetPanelGroup.DOFade(1f, _fadeDuration).OnStart(() =>
+        {
+            SetPanelInteractable(targetPanelGroup, true);
+        });
     }
 
     private void SwitchCameraPriority(CinemachineVirtualCamera activeCamera, CinemachineVirtualCamera inactiveCamera)
     {
-        SetCameraPriority(activeCamera, 10);
-        SetCameraPriority(inactiveCamera, 0);
+        activeCamera.Priority = 10;
+        inactiveCamera.Priority = 0;
     }
 
-    private void SetPanelPosition(RectTransform panel, Vector2 position)
+    private void SetPanelInteractable(CanvasGroup panelGroup, bool isInteractable)
     {
-        panel.anchoredPosition = position;
+        panelGroup.interactable = isInteractable;
+        panelGroup.blocksRaycasts = isInteractable;
     }
 }
