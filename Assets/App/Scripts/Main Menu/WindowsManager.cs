@@ -17,12 +17,13 @@ public class WindowsManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float _transitionDuration = 1f;
 
-    private bool _isInMainScene = false;
+    private RectTransform _currentPanel;
 
     private void Start()
     {
         InitializeCameraPriorities();
         InitializePanelPositions();
+        _currentPanel = _menuPanel; // Устанавливаем начальную панель
     }
 
     private void InitializeCameraPriorities()
@@ -33,39 +34,74 @@ public class WindowsManager : MonoBehaviour
 
     private void InitializePanelPositions()
     {
-        SetPanelPosition(_productsPanel, new Vector2(-Screen.width, 0));
-        SetPanelPosition(_enterprisesPanel, new Vector2(Screen.width, 0));
+        // Устанавливаем панели на начальные позиции
+        SetPanelPosition(_menuPanel, Vector2.zero); // Центр
+        SetPanelPosition(_productsPanel, new Vector2(-Screen.width, 0)); // Слева
+        SetPanelPosition(_enterprisesPanel, new Vector2(Screen.width, 0)); // Справа
     }
+
+    // === Методы открытия/закрытия окон ===
 
     public void OpenProductsWindow()
     {
-        if (_isInMainScene) 
-            return;
+        if (_currentPanel == _productsPanel) return;
 
-        _isInMainScene = true;
-        SwitchToPanel(_menuPanel, _productsPanel, new Vector2(Screen.width, 0), Vector2.zero);
         SwitchCameraPriority(_mainCamera, _startCamera);
+        MovePanels(_productsPanel);
+        _currentPanel = _productsPanel;
     }
 
     public void ReturnFromProducts()
     {
-        if (!_isInMainScene) 
-            return;
+        if (_currentPanel == _menuPanel) return;
 
-        _isInMainScene = false;
-        SwitchToPanel(_productsPanel, _menuPanel, new Vector2(-Screen.width, 0), Vector2.zero);
         SwitchCameraPriority(_startCamera, _mainCamera);
+        MovePanels(_menuPanel);
+        _currentPanel = _menuPanel;
     }
 
-    public void OpenEnterprisesWindow() => SwitchToPanel(_menuPanel, _enterprisesPanel, new Vector2(-Screen.width, 0), Vector2.zero);
+    public void OpenEnterprisesWindow()
+    {
+        if (_currentPanel == _enterprisesPanel) return;
 
-    public void ReturnFromEnterprises() => SwitchToPanel(_enterprisesPanel, _menuPanel, new Vector2(Screen.width, 0), Vector2.zero);
+        MovePanels(_enterprisesPanel);
+        _currentPanel = _enterprisesPanel;
+    }
 
-    public void LoadEnterpriseScene() => SceneManager.LoadScene(SceneNames.TestEnterpriseScene);
+    public void ReturnFromEnterprises()
+    {
+        if (_currentPanel == _menuPanel) return;
 
-    // === Helper Methods ===
+        MovePanels(_menuPanel);
+        _currentPanel = _menuPanel;
+    }
 
-    private void SetCameraPriority(CinemachineVirtualCamera camera, int priority) => camera.Priority = priority;
+    public void LoadEnterpriseScene()
+    {
+        SceneManager.LoadScene(SceneNames.TestEnterpriseScene);
+    }
+
+    // === Вспомогательные методы ===
+
+    private void MovePanels(RectTransform targetPanel)
+    {
+        // Рассчитываем смещение, чтобы выбранная панель была по центру
+        float targetOffset = -targetPanel.anchoredPosition.x;
+
+        // Останавливаем текущие анимации и начинаем новые
+        _menuPanel.DOKill();
+        _productsPanel.DOKill();
+        _enterprisesPanel.DOKill();
+
+        _menuPanel.DOAnchorPosX(_menuPanel.anchoredPosition.x + targetOffset, _transitionDuration);
+        _productsPanel.DOAnchorPosX(_productsPanel.anchoredPosition.x + targetOffset, _transitionDuration);
+        _enterprisesPanel.DOAnchorPosX(_enterprisesPanel.anchoredPosition.x + targetOffset, _transitionDuration);
+    }
+
+    private void SetCameraPriority(CinemachineVirtualCamera camera, int priority)
+    {
+        camera.Priority = priority;
+    }
 
     private void SwitchCameraPriority(CinemachineVirtualCamera activeCamera, CinemachineVirtualCamera inactiveCamera)
     {
@@ -73,14 +109,8 @@ public class WindowsManager : MonoBehaviour
         SetCameraPriority(inactiveCamera, 0);
     }
 
-    private void SetPanelPosition(RectTransform panel, Vector2 position) => panel.anchoredPosition = position;
-
-    private void SwitchToPanel(RectTransform fromPanel, RectTransform toPanel, Vector2 fromTarget, Vector2 toTarget)
+    private void SetPanelPosition(RectTransform panel, Vector2 position)
     {
-        fromPanel.DOKill();
-        toPanel.DOKill();
-
-        fromPanel.DOAnchorPos(fromTarget, _transitionDuration);
-        toPanel.DOAnchorPos(toTarget, _transitionDuration);
+        panel.anchoredPosition = position;
     }
 }
