@@ -1,14 +1,14 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Cinemachine;
 using DG.Tweening;
+using Cinemachine;
 
 public class WindowsManager : MonoBehaviour
 {
     [Header("UI Elements")]
-    [SerializeField] private RectTransform _menuPanel;
-    [SerializeField] private RectTransform _productsPanel;
-    [SerializeField] private RectTransform _enterprisesPanel;
+    [SerializeField] private CanvasGroup _menuPanelGroup;
+    [SerializeField] private CanvasGroup _productsPanelGroup;
+    [SerializeField] private CanvasGroup _enterprisesPanelGroup;
+    [SerializeField] private CanvasGroup _productsSelectionPanelGroup;
 
     [Header("Cameras")]
     [SerializeField] private CinemachineVirtualCamera _startCamera;
@@ -16,71 +16,96 @@ public class WindowsManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float _transitionDuration = 1f;
+    [SerializeField] private float _fadeDuration = 0.5f;
 
-    private bool _isInMainScene = false;
+    private CanvasGroup _currentPanelGroup;
+    private RectTransform _menuPanelRect;
+    private RectTransform _productsPanelRect;
+    private RectTransform _enterprisesPanelRect;
+    private RectTransform _productsSelectionPanelRect;
 
     private void Start()
     {
-        InitializeCameraPriorities();
-        InitializePanelPositions();
+        _menuPanelRect = _menuPanelGroup.GetComponent<RectTransform>();
+        _productsPanelRect = _productsPanelGroup.GetComponent<RectTransform>();
+        _enterprisesPanelRect = _enterprisesPanelGroup.GetComponent<RectTransform>();
+        _productsSelectionPanelRect = _productsSelectionPanelGroup.GetComponent<RectTransform>();
+
+        InitializePanels();
+        _currentPanelGroup = _menuPanelGroup;
     }
 
-    private void InitializeCameraPriorities()
+    private void InitializePanels()
     {
-        SetCameraPriority(_startCamera, 10);
-        SetCameraPriority(_mainCamera, 0);
-    }
+        _menuPanelRect.anchoredPosition = Vector2.zero;
+        _productsPanelRect.anchoredPosition = new Vector2(-2*Screen.width, 0);
+        _enterprisesPanelRect.anchoredPosition = new Vector2(Screen.width, 0);
+        _productsSelectionPanelRect.anchoredPosition = new Vector2(-Screen.width, 0);
 
-    private void InitializePanelPositions()
-    {
-        SetPanelPosition(_productsPanel, new Vector2(-Screen.width, 0));
-        SetPanelPosition(_enterprisesPanel, new Vector2(Screen.width, 0));
+        _menuPanelGroup.alpha = 1f;
+        _productsPanelGroup.alpha = 0f;
+        _enterprisesPanelGroup.alpha = 0f;
+        _productsSelectionPanelGroup.alpha = 0f;
+
+        SetPanelInteractable(_menuPanelGroup, true);
+        SetPanelInteractable(_productsPanelGroup, false);
+        SetPanelInteractable(_enterprisesPanelGroup, false);
+        SetPanelInteractable(_productsSelectionPanelGroup, false);
     }
 
     public void OpenProductsWindow()
     {
-        if (_isInMainScene) 
-            return;
-
-        _isInMainScene = true;
-        SwitchToPanel(_menuPanel, _productsPanel, new Vector2(Screen.width, 0), Vector2.zero);
         SwitchCameraPriority(_mainCamera, _startCamera);
+        TransitionPanels(_productsPanelGroup, _productsPanelRect);
     }
 
-    public void ReturnFromProducts()
+    public void OpenProductsSelectionWindow()
     {
-        if (!_isInMainScene) 
-            return;
-
-        _isInMainScene = false;
-        SwitchToPanel(_productsPanel, _menuPanel, new Vector2(-Screen.width, 0), Vector2.zero);
-        SwitchCameraPriority(_startCamera, _mainCamera);
+        //SwitchCameraPriority(_mainCamera, _startCamera);
+        TransitionPanels(_productsSelectionPanelGroup, _productsSelectionPanelRect);
     }
 
-    public void OpenEnterprisesWindow() => SwitchToPanel(_menuPanel, _enterprisesPanel, new Vector2(-Screen.width, 0), Vector2.zero);
+    public void OpenEnterprisesWindow()
+    {
+        TransitionPanels(_enterprisesPanelGroup, _enterprisesPanelRect);
+    }
 
-    public void ReturnFromEnterprises() => SwitchToPanel(_enterprisesPanel, _menuPanel, new Vector2(Screen.width, 0), Vector2.zero);
+    public void ReturnToMenu()
+    {
+        SwitchCameraPriority(_startCamera, _mainCamera);
+        TransitionPanels(_menuPanelGroup, _menuPanelRect);
+    }
 
-    public void LoadEnterpriseScene() => SceneManager.LoadScene(SceneNames.TestEnterpriseScene);
+    private void TransitionPanels(CanvasGroup targetPanelGroup, RectTransform targetPanelRect)
+    {
+        float targetOffset = -targetPanelRect.anchoredPosition.x;
 
-    // === Helper Methods ===
+        _menuPanelRect.DOAnchorPosX(_menuPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
+        _productsPanelRect.DOAnchorPosX(_productsPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
+        _enterprisesPanelRect.DOAnchorPosX(_enterprisesPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
+        _productsSelectionPanelRect.DOAnchorPosX(_productsSelectionPanelRect.anchoredPosition.x + targetOffset, _transitionDuration);
 
-    private void SetCameraPriority(CinemachineVirtualCamera camera, int priority) => camera.Priority = priority;
+        _currentPanelGroup.DOFade(0f, _fadeDuration).OnComplete(() =>
+        {
+            SetPanelInteractable(_currentPanelGroup, false);
+            _currentPanelGroup = targetPanelGroup;
+        });
+
+        targetPanelGroup.DOFade(1f, _fadeDuration).OnStart(() =>
+        {
+            SetPanelInteractable(targetPanelGroup, true);
+        });
+    }
 
     private void SwitchCameraPriority(CinemachineVirtualCamera activeCamera, CinemachineVirtualCamera inactiveCamera)
     {
-        SetCameraPriority(activeCamera, 10);
-        SetCameraPriority(inactiveCamera, 0);
+        activeCamera.Priority = 10;
+        inactiveCamera.Priority = 0;
     }
 
-    private void SetPanelPosition(RectTransform panel, Vector2 position) => panel.anchoredPosition = position;
-
-    private void SwitchToPanel(RectTransform fromPanel, RectTransform toPanel, Vector2 fromTarget, Vector2 toTarget)
+    private void SetPanelInteractable(CanvasGroup panelGroup, bool isInteractable)
     {
-        fromPanel.DOKill();
-        toPanel.DOKill();
-
-        fromPanel.DOAnchorPos(fromTarget, _transitionDuration);
-        toPanel.DOAnchorPos(toTarget, _transitionDuration);
+        panelGroup.interactable = isInteractable;
+        panelGroup.blocksRaycasts = isInteractable;
     }
 }
