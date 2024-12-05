@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Callbacks;
 
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollSelector : MonoBehaviour
@@ -15,7 +16,7 @@ public class ScrollSelector : MonoBehaviour
 
     protected int _selectedIndex = -1;
     protected ScrollRect _scrollRect;
-    protected List<ScrollElement> _elements = new();
+    protected List<ScrollElement> _elements = new List<ScrollElement>();
     protected Vector3 _targetPosition;
 
     protected bool _isWatchingScroll = false;
@@ -116,6 +117,8 @@ public class ScrollSelector : MonoBehaviour
         if ((_content.position - _targetPosition).sqrMagnitude > _scrollDeadZone * _scrollDeadZone)
             _content.position = Vector3.Lerp(_content.position, _targetPosition, _smoothTime * Time.deltaTime);
     }
+
+    public void SelectRelativeElement(int offset) => SelectElement(Mathf.Clamp(_selectedIndex + offset, 0, _elements.Count - 1));
 
     protected IEnumerator WaitAndSelect()
     {

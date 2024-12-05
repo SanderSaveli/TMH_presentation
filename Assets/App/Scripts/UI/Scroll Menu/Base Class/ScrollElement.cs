@@ -14,21 +14,16 @@ public abstract class ScrollElement : MonoBehaviour, IPointerClickHandler
     protected int Index { get; private set; }
 
     [SerializeField, Min(0)] protected float _sizeIncrease = 10f; 
-    [SerializeField] protected Color _selectedColor = Color.white;
-    [SerializeField] protected Color _deselectedColor = Color.gray;
 
-    protected Image _image;
+    protected Button _button;
     protected Vector2 _originalSize;
 
     protected void Awake()
     {
-        _image = GetComponent<Image>();
+        _button = GetComponent<Button>();
         RectTransform = GetComponent<RectTransform>();
 
-        if (_image == null)
-            Debug.LogWarning($"{nameof(ScrollElement)}: Image component is missing on {gameObject.name}.");
-        else
-            _image.color = _deselectedColor;
+        _button.interactable = false;
 
         _originalSize = RectTransform.sizeDelta;
     }
@@ -40,20 +35,18 @@ public abstract class ScrollElement : MonoBehaviour, IPointerClickHandler
 
     public virtual void Deselect()
     {
+        _button.interactable = false;
+
         if (RectTransform != null)
             RectTransform.sizeDelta = _originalSize;
-
-        if (_image != null)
-            _image.color = _deselectedColor;
     }
 
     public virtual void Select()
     {
+        _button.interactable = true;
+
         if (RectTransform != null)
             RectTransform.sizeDelta = _originalSize + new Vector2(_sizeIncrease, _sizeIncrease);
-
-        if (_image != null)
-            _image.color = _selectedColor;
     }
 
     public virtual void OnPointerClick(PointerEventData eventData) => OnClicked?.Invoke(Index);
