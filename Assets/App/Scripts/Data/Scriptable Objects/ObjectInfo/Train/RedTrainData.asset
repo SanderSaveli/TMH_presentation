@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5e31185d2edbc47b4ef28adf8596ae, type: 3}
   m_Name: RedTrainData
   m_EditorClassIdentifier: 
+  _category: 0
+  _icon: {fileID: 21300000, guid: c863b9b5c83654db2a90c9e8c1eb59b4, type: 3}
   _name: "\u041A\u0440\u0430\u0441\u043D\u044B\u0439 \u043B\u043E\u043A\u043E\u043C\u043E\u0442\u0438\u0432"
   _description: "\u041E\u0447\u0435\u043D\u044C \u043A\u0440\u0443\u0442\u043E\u0439
     \u0438 \u043C\u043E\u0449\u044C\u043D\u0439, \u043D\u0430\u0432\u0435\u0440\u043D\u043E\u0435
@@ -19,3 +21,4 @@ MonoBehaviour:
     \u043B\u043E\u043A\u043E\u043C\u043E\u0442\u0438\u0432. \u041D\u0430\u0441\u0442\u043E\u043B\u044C\u043A\u043E
     \u043A\u0440\u0443\u0442 \u0447\u0442\u043E \u043C\u043E\u0436\u0435\u0442 \u0434\u0430\u0436\u0435
     \u043F\u0430\u0440\u0438\u0442\u044C \u0432 \u043E\u0431\u043B\u0430\u043A\u0430\u0445. "
+  _modelPrefab: {fileID: 4198834703987081323, guid: ff8b047a5e16a4310b01c938da3e1986, type: 3}

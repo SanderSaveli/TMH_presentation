@@ -1,9 +1,9 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour, ICameraController
 {
+    public static CameraController Instance { get; private set; }
     [SerializeField] private Transform _target;
     [SerializeField] private RawImage _renderTargetImage;
     [SerializeField] private Camera _renderCamera;
@@ -24,15 +24,12 @@ public class CameraController : MonoBehaviour, ICameraController
 
     private readonly Vector3 INITIALROTATIONAROUNDTARGET = new Vector3(25f, 0f, 0f);
 
-    private void Start()
+    private void Awake() 
     {
-        if (_target == null) 
-        {
-            Debug.LogError("Target not assigned for CameraController!");
-            return;
-        }
-
-        SetTarget(_target);
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
     }
 
     private void LateUpdate()

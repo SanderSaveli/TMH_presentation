@@ -7,11 +7,12 @@ using System.Collections.Generic;
 public class ScrollSelector : MonoBehaviour
 {
     [SerializeField] protected RectTransform _selectPosition;
-    [SerializeField] protected RectTransform _content;
     [SerializeField] protected float _smoothTime = 0.2f;
     [SerializeField] protected float _scrollDeadZone = 0.1f;
     [SerializeField] protected float _delayBetweenElements = 0.25f;
     [SerializeField][Min(0)] protected int _startSelectedIndex = 0;
+
+    public RectTransform Content;
 
     protected int _selectedIndex = -1;
     protected ScrollRect _scrollRect;
@@ -22,16 +23,10 @@ public class ScrollSelector : MonoBehaviour
 
     protected ScrollElement _targetElement;
 
-    protected void OnEnable()
+    protected virtual void Awake()
     {
         _scrollRect = GetComponent<ScrollRect>();
         _scrollRect.onValueChanged.AddListener(OnScroll);
-    }
-
-    protected virtual void Start() 
-    {
-        InitializeElements();
-        StartCoroutine(WaitAndSelect());
     }
 
     protected void Update()
@@ -45,16 +40,34 @@ public class ScrollSelector : MonoBehaviour
         }
     }
 
+    public void UpdateElements() 
+    {
+        InitializeElements();
+        StartCoroutine(WaitAndSelect());
+    }
+
     protected void InitializeElements()
     {
+        for (int i = 0; i < Content.childCount; i++)
+        {
+            var child = Content.GetChild(i);
+            var element = child.GetComponent<ScrollElement>();
+            element.OnClicked -= SelectElement;
+        }
+        
         _elements.Clear();
 
-        for (int i = 0; i < _content.childCount; i++)
+        for (int i = 0; i < Content.childCount; i++)
         {
-            ScrollElement element = _content.GetChild(i).GetComponent<ScrollElement>();
-            element.Initialize(i);
+            var child = Content.GetChild(i);
+            var element = child.GetComponent<ScrollElement>();
 
-            float delay = Mathf.Abs(_startSelectedIndex - i) * _delayBetweenElements;
+            if (element == null)
+            {
+                Debug.LogError($"Child at index {i} does not have a ScrollElement component!");
+                continue;
+            }
+
             _elements.Add(element);
             element.OnClicked += SelectElement;
         }
@@ -84,14 +97,27 @@ public class ScrollSelector : MonoBehaviour
 
     protected virtual void SelectElement(int index)
     {
+        if (index < 0 || index >= _elements.Count)
+        {
+            Debug.LogError($"Invalid index: {index}");
+            return;
+        }
+
+        var element = _elements[index];
+        if (element == null)
+        {
+            Debug.LogError($"Element at index {index} is null!");
+            return;
+        }
+
         if (_selectedIndex == index)
             return;
 
         DeselectElement(_selectedIndex);
 
-        _targetElement = _elements[index];
+        _targetElement = element;
         _targetPosition = CalculateTargetPosition(_targetElement.RectTransform.position);
-        _targetElement.Select();
+        _targetElement.Select(); // Здесь вызывается метод, где возникает ошибка
         _selectedIndex = index;
     }
 
@@ -103,7 +129,7 @@ public class ScrollSelector : MonoBehaviour
 
     protected Vector3 CalculateTargetPosition(Vector3 elementPosition)
     {
-        return _selectPosition.position + (_content.position - elementPosition);
+        return _selectPosition.position + (Content.position - elementPosition);
     }
 
     protected void SmoothScrollToSelected()
@@ -113,13 +139,20 @@ public class ScrollSelector : MonoBehaviour
 
         _targetPosition = CalculateTargetPosition(_elements[_selectedIndex].RectTransform.position);
 
-        if ((_content.position - _targetPosition).sqrMagnitude > _scrollDeadZone * _scrollDeadZone)
-            _content.position = Vector3.Lerp(_content.position, _targetPosition, _smoothTime * Time.deltaTime);
+        if ((Content.position - _targetPosition).sqrMagnitude > _scrollDeadZone * _scrollDeadZone)
+            Content.position = Vector3.Lerp(Content.position, _targetPosition, _smoothTime * Time.deltaTime);
     }
 
     protected IEnumerator WaitAndSelect()
     {
         yield return new WaitForSeconds(0.01f);
+
+        if (_startSelectedIndex < 0 || _startSelectedIndex >= _elements.Count)
+        {
+            Debug.LogError($"StartSelectedIndex {_startSelectedIndex} is out of range!");
+            yield break;
+        }
+
         SelectElement(_startSelectedIndex);
     }
 

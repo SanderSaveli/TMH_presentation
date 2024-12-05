@@ -1,16 +1,16 @@
 public class ProductElementScroller : ScrollSelector
 {
-    protected override void Start()
+    protected override void Awake()
     {
-        _startSelectedIndex = PlayerPrefsManager.LoadProductIndex();
+        _startSelectedIndex = 0;//PlayerPrefsManager.LoadProductIndex();
         
-        base.Start();
+        base.Awake();
     }
 
     protected override void SelectElement(int index)
     {
         base.SelectElement(index);
 
-        PlayerPrefsManager.SaveProductIndex(index);
+        //PlayerPrefsManager.SaveProductIndex(index);
     }
 }

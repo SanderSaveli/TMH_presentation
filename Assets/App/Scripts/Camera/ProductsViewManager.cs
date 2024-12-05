@@ -17,11 +17,9 @@ public class ProductsViewManager : MonoBehaviour
 
     private void OnEnable() => _signalBus.Subscribe<EventInputSelectModel>(OnModelSelected);
 
-    private void Start() => _cameraController.SetTarget(_modelManager.GetCurrentModelTransform());
-
     private void OnModelSelected(EventInputSelectModel ctx)
     {
-        _modelManager.ShowModel(ctx.ModelIndex);
+        _modelManager.ShowModel(ctx.ModelPrefab);
         _cameraController.SetTarget(_modelManager.GetCurrentModelTransform());
     }
 

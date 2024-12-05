@@ -5,11 +5,11 @@ public class EnterpriseElementScroller : ScrollSelector
 {
     [SerializeField] private TextMeshProUGUI _enterpriseNameText;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        _startSelectedIndex = PlayerPrefsManager.LoadEnterpriseIndex();
+        _startSelectedIndex = 0;//PlayerPrefsManager.LoadEnterpriseIndex();
 
-        base.Start();
+        base.Awake();
     }
 
     protected override void SelectElement(int index)
@@ -18,6 +18,6 @@ public class EnterpriseElementScroller : ScrollSelector
 
         _enterpriseNameText.text = ((EnterpriseScrollElement)_targetElement).EnterpriseName;
 
-        PlayerPrefsManager.SaveEnterpriseIndex(index);
+        //PlayerPrefsManager.SaveEnterpriseIndex(index);
     }
 }

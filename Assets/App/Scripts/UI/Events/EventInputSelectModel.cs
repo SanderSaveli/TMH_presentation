@@ -1,6 +1,8 @@
+using UnityEngine;
+
 public class EventInputSelectModel
 {
-    public int ModelIndex;
+    public GameObject ModelPrefab;
 
-    public EventInputSelectModel(int modelIndex) => ModelIndex = modelIndex;
+    public EventInputSelectModel(GameObject modelPrefab) => ModelPrefab = modelPrefab;
 }
