@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour, ICameraController
 {
+    public static CameraController Instance { get; private set; }
     [SerializeField] private Transform _target;
     [SerializeField] private RawImage _renderTargetImage;
-    [SerializeField] private Camera _renderCamera;
     [SerializeField] private float _mouseRotationSpeed = 100.0f, _mouseZoomSpeed = 2.0f, _touchRotationSpeed = 100.0f, _touchZoomSpeed = 2.0f;
     [SerializeField] private float _minDistance = 5.0f, _maxDistance = 20.0f;
     [SerializeField] private float _minHeight = 0f, _maxHeight = 89f;
@@ -22,17 +21,12 @@ public class CameraController : MonoBehaviour, ICameraController
     private Vector2 _lastTouchPosition;
     private float _initialPinchDistance;
 
-    private readonly Vector3 INITIALROTATIONAROUNDTARGET = new Vector3(25f, 0f, 0f);
-
-    private void Start()
+    private void Awake() 
     {
-        if (_target == null) 
-        {
-            Debug.LogError("Target not assigned for CameraController!");
-            return;
-        }
-
-        SetTarget(_target);
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
     }
 
     private void LateUpdate()
@@ -197,6 +191,25 @@ public class CameraController : MonoBehaviour, ICameraController
         _distanceToTarget = Vector3.Distance(transform.position, _target.position);
         _targetDistance = _maxDistance;
         _currentEulerAngles = transform.eulerAngles;
-        _targetEulerAngles = INITIALROTATIONAROUNDTARGET;
+        _targetEulerAngles = _currentEulerAngles;
+    }
+
+    public void SetTarget(Transform target, Vector3 angle)
+    {
+        _target = target;
+        _distanceToTarget = Vector3.Distance(transform.position, _target.position);
+        _targetDistance = _maxDistance;
+        _currentEulerAngles = transform.eulerAngles;
+        _targetEulerAngles = angle;
+    }
+
+    public void ZoomIn(float amount)
+    {
+        _targetDistance = Mathf.Clamp(_targetDistance - amount, _minDistance, _maxDistance);
+    }
+
+    public void ZoomOut(float amount)
+    {
+        _targetDistance = Mathf.Clamp(_targetDistance + amount, _minDistance, _maxDistance);
     }
 }

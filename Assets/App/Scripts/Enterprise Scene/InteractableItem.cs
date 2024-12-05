@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class InteractableItem : MonoBehaviour
 {
-    public delegate void OnInteractAction(InteractableItem item);
+    public delegate void OnInteractAction(ObjectInfo item, Transform target);
     public static event OnInteractAction OnInteract;
     public ObjectInfo Data;
 
-    private void OnMouseDown() => OnInteract?.Invoke(this);
+    public void OnMouseDown() => OnInteract?.Invoke(Data, transform);
 }
