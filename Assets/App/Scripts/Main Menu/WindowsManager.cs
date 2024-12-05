@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class WindowsManager : MonoBehaviour
 {
@@ -74,6 +75,11 @@ public class WindowsManager : MonoBehaviour
     {
         SwitchCameraPriority(_startCamera, _mainCamera);
         TransitionPanels(_menuPanelGroup, _menuPanelRect);
+    }
+
+    public void LoadEnterpriseScene() 
+    {
+        SceneManager.LoadScene(SceneNames.TestEnterpriseScene);
     }
 
     private void TransitionPanels(CanvasGroup targetPanelGroup, RectTransform targetPanelRect)
