@@ -10,6 +10,8 @@ public class InterractiveItemItemInfo : MonoBehaviour
     [SerializeField] private GameObject _descriptionPanel;
     private SignalBus _signalBus;
 
+    private Coroutine _descriptionAnimation;
+
     [Inject]
     public void Construct(SignalBus signalBus)
     {
@@ -37,7 +39,11 @@ public class InterractiveItemItemInfo : MonoBehaviour
     {
         _descriptionPanel.SetActive(true);
         _name.text = ctx.modelData.Name;
-        StartCoroutine(AnimateText(ctx.modelData.Description));
+        if(_descriptionAnimation != null)
+        {
+            StopCoroutine(_descriptionAnimation);
+        }
+        _descriptionAnimation = StartCoroutine(AnimateText(ctx.modelData.Description));
     }
 
     private IEnumerator AnimateText(string fullText)
@@ -49,5 +55,6 @@ public class InterractiveItemItemInfo : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
 
         }
+        _descriptionAnimation = null;
     }
 }
